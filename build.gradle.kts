@@ -27,9 +27,8 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:26.2-R0.1-SNAPSHOT")
     compileOnly("com.mojang:authlib:3.13.56")
 
-    compileOnly("net.kyori:adventure-api:4.26.1")
-    compileOnly("net.kyori:adventure-text-minimessage:4.26.1")
-
+    implementation("net.kyori:adventure-api:4.26.1")
+    implementation("net.kyori:adventure-text-minimessage:4.26.1")
     implementation("net.kyori:adventure-platform-bukkit:4.4.1")
     implementation("org.bstats:bstats-bukkit:3.1.0")
 }
