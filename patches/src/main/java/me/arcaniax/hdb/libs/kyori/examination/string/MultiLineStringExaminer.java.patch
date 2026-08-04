@@ -1,0 +1,200 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/examination/string/MultiLineStringExaminer.java b/src/main/java/me/arcaniax/hdb/libs/kyori/examination/string/MultiLineStringExaminer.java
+deleted file mode 100644
+index 1ec2887..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/examination/string/MultiLineStringExaminer.java
++++ /dev/null
+@@ -1,194 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.examination.string;
+-
+-import java.util.ArrayList;
+-import java.util.Collection;
+-import java.util.List;
+-import java.util.Map;
+-import java.util.Map.Entry;
+-import java.util.function.IntFunction;
+-import java.util.stream.Collectors;
+-import java.util.stream.DoubleStream;
+-import java.util.stream.IntStream;
+-import java.util.stream.LongStream;
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.examination.AbstractExaminer;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-public class MultiLineStringExaminer extends AbstractExaminer<Stream<String>> {
+-   private static final String INDENT_2 = "  ";
+-   private final StringExaminer examiner;
+-
+-   @NotNull
+-   public static MultiLineStringExaminer simpleEscaping() {
+-      return MultiLineStringExaminer.Instances.SIMPLE_ESCAPING;
+-   }
+-
+-   public MultiLineStringExaminer(@NotNull final StringExaminer examiner) {
+-      this.examiner = examinerx;
+-   }
+-
+-   @NotNull
+-   protected <E> Stream<String> array(final E @NotNull [] array, @NotNull final Stream<Stream<String>> elements) {
+-      return this.arrayLike(elements);
+-   }
+-
+-   @NotNull
+-   protected <E> Stream<String> collection(@NotNull final Collection<E> collection, @NotNull final Stream<Stream<String>> elements) {
+-      return this.arrayLike(elements);
+-   }
+-
+-   @NotNull
+-   protected Stream<String> examinable(@NotNull final String name, @NotNull final Stream<Entry<String, Stream<String>>> properties) {
+-      Stream var3 = flatten(",", properties.map(var1 -> association(this.examine((String)var1.getKey()), " = ", (Stream<String>)var1.getValue())));
+-      Stream var4 = indent(var3);
+-      return enclose(var4, name + "{", "}");
+-   }
+-
+-   @NotNull
+-   protected <K, V> Stream<String> map(@NotNull final Map<K, V> map, @NotNull final Stream<Entry<Stream<String>, Stream<String>>> entries) {
+-      Stream var3 = flatten(",", entries.map(var0 -> association((Stream<String>)var0.getKey(), " = ", (Stream<String>)var0.getValue())));
+-      Stream var4 = indent(var3);
+-      return enclose(var4, "{", "}");
+-   }
+-
+-   @NotNull
+-   protected Stream<String> nil() {
+-      return Stream.of(this.examiner.nil());
+-   }
+-
+-   @NotNull
+-   protected Stream<String> scalar(@NotNull final Object value) {
+-      return Stream.of(this.examiner.scalar(value));
+-   }
+-
+-   @NotNull
+-   public Stream<String> examine(final boolean value) {
+-      return Stream.of(this.examiner.examine(value));
+-   }
+-
+-   @NotNull
+-   public Stream<String> examine(final byte value) {
+-      return Stream.of(this.examiner.examine(value));
+-   }
+-
+-   @NotNull
+-   public Stream<String> examine(final char value) {
+-      return Stream.of(this.examiner.examine(value));
+-   }
+-
+-   @NotNull
+-   public Stream<String> examine(final double value) {
+-      return Stream.of(this.examiner.examine(value));
+-   }
+-
+-   @NotNull
+-   public Stream<String> examine(final float value) {
+-      return Stream.of(this.examiner.examine(value));
+-   }
+-
+-   @NotNull
+-   public Stream<String> examine(final int value) {
+-      return Stream.of(this.examiner.examine(value));
+-   }
+-
+-   @NotNull
+-   public Stream<String> examine(final long value) {
+-      return Stream.of(this.examiner.examine(value));
+-   }
+-
+-   @NotNull
+-   public Stream<String> examine(final short value) {
+-      return Stream.of(this.examiner.examine(value));
+-   }
+-
+-   @NotNull
+-   protected Stream<String> array(final int length, final IntFunction<Stream<String>> value) {
+-      return this.arrayLike(length == 0 ? Stream.empty() : IntStream.range(0, length).mapToObj(value));
+-   }
+-
+-   @NotNull
+-   protected <T> Stream<String> stream(@NotNull final Stream<T> stream) {
+-      return this.arrayLike(stream.map(this::examine));
+-   }
+-
+-   @NotNull
+-   protected Stream<String> stream(@NotNull final DoubleStream stream) {
+-      return this.arrayLike(stream.mapToObj(this::examine));
+-   }
+-
+-   @NotNull
+-   protected Stream<String> stream(@NotNull final IntStream stream) {
+-      return this.arrayLike(stream.mapToObj(this::examine));
+-   }
+-
+-   @NotNull
+-   protected Stream<String> stream(@NotNull final LongStream stream) {
+-      return this.arrayLike(stream.mapToObj(this::examine));
+-   }
+-
+-   @NotNull
+-   public Stream<String> examine(@Nullable final String value) {
+-      return Stream.of(this.examiner.examine(value));
+-   }
+-
+-   private Stream<String> arrayLike(final Stream<Stream<String>> streams) {
+-      Stream var2 = flatten(",", streams);
+-      Stream var3 = indent(var2);
+-      return enclose(var3, "[", "]");
+-   }
+-
+-   private static Stream<String> enclose(final Stream<String> lines, final String open, final String close) {
+-      return enclose(lines.collect(Collectors.toList()), open, close);
+-   }
+-
+-   private static Stream<String> enclose(final List<String> lines, final String open, final String close) {
+-      return lines.isEmpty()
+-         ? Stream.of(open + close)
+-         : Stream.of(Stream.of(open), indent(lines.stream()), Stream.of(close)).reduce(Stream.empty(), Stream::concat);
+-   }
+-
+-   private static Stream<String> flatten(final String delimiter, final Stream<Stream<String>> bumpy) {
+-      ArrayList var2 = new ArrayList();
+-      bumpy.forEachOrdered(var2x -> {
+-         if (!var2.isEmpty()) {
+-            int var3 = var2.size() - 1;
+-            var2.set(var3, (String)var2.get(var3) + delimiter);
+-         }
+-
+-         var2x.forEachOrdered(var2::add);
+-      });
+-      return var2.stream();
+-   }
+-
+-   private static Stream<String> association(final Stream<String> left, final String middle, final Stream<String> right) {
+-      return association(left.collect(Collectors.toList()), middle, right.collect(Collectors.toList()));
+-   }
+-
+-   private static Stream<String> association(final List<String> left, final String middle, final List<String> right) {
+-      int var3 = left.size();
+-      int var4 = right.size();
+-      int var5 = Math.max(var3, var4);
+-      int var6 = Strings.maxLength(left.stream());
+-      String var7 = var3 < 2 ? "" : Strings.repeat(" ", var6);
+-      String var8 = var3 < 2 ? "" : Strings.repeat(" ", middle.length());
+-      ArrayList var9 = new ArrayList(var5);
+-
+-      for (int var10 = 0; var10 < var5; var10++) {
+-         String var11 = var10 < var3 ? Strings.padEnd((String)left.get(var10), var6, ' ') : var7;
+-         String var12 = var10 == 0 ? middle : var8;
+-         String var13 = var10 < var4 ? (String)right.get(var10) : "";
+-         var9.add(var11 + var12 + var13);
+-      }
+-
+-      return var9.stream();
+-   }
+-
+-   private static Stream<String> indent(final Stream<String> lines) {
+-      return lines.map(var0 -> "  " + var0);
+-   }
+-
+-   private static final class Instances {
+-      static final MultiLineStringExaminer SIMPLE_ESCAPING = new MultiLineStringExaminer(StringExaminer.simpleEscaping());
+-   }
+-}

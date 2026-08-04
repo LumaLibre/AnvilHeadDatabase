@@ -1,0 +1,80 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/CachingTagResolver.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/CachingTagResolver.java
+deleted file mode 100644
+index 02ee0a6..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/CachingTagResolver.java
++++ /dev/null
+@@ -1,74 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver;
+-
+-import java.util.HashMap;
+-import java.util.Map;
+-import java.util.Objects;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Inserting;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class CachingTagResolver implements TagResolver.WithoutArguments, MappableResolver, SerializableResolver {
+-   private static final Tag NULL_REPLACEMENT = (Inserting)() -> {
+-      throw new UnsupportedOperationException("no-op null tag");
+-   };
+-   private final Map<String, Tag> cache = new HashMap<>();
+-   private final TagResolver.WithoutArguments resolver;
+-
+-   CachingTagResolver(final TagResolver.WithoutArguments resolver) {
+-      this.resolver = resolverx;
+-   }
+-
+-   private Tag query(@NotNull final String key) {
+-      return this.cache.computeIfAbsent(key, var1 -> {
+-         Tag var2 = this.resolver.resolve(var1);
+-         return var2 == null ? NULL_REPLACEMENT : var2;
+-      });
+-   }
+-
+-   @Nullable
+-   @Override
+-   public Tag resolve(@NotNull final String name) {
+-      Tag var2 = this.query(name);
+-      return var2 == NULL_REPLACEMENT ? null : var2;
+-   }
+-
+-   @Override
+-   public boolean has(@NotNull final String name) {
+-      return this.query(name) != NULL_REPLACEMENT;
+-   }
+-
+-   @Override
+-   public boolean contributeToMap(@NotNull final Map<String, Tag> map) {
+-      return this.resolver instanceof MappableResolver ? ((MappableResolver)this.resolver).contributeToMap(map) : false;
+-   }
+-
+-   @Override
+-   public void handle(@NotNull final Component serializable, @NotNull final ClaimConsumer consumer) {
+-      if (this.resolver instanceof SerializableResolver) {
+-         ((SerializableResolver)this.resolver).handle(serializable, consumer);
+-      }
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (this == other) {
+-         return true;
+-      }
+-
+-      if (!(other instanceof CachingTagResolver)) {
+-         return false;
+-      }
+-
+-      CachingTagResolver var2 = (CachingTagResolver)other;
+-      return Objects.equals(this.resolver, var2.resolver);
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      return Objects.hash(this.resolver);
+-   }
+-}

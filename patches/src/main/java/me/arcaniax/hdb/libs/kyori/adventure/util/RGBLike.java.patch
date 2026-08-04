@@ -1,0 +1,23 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/RGBLike.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/RGBLike.java
+deleted file mode 100644
+index 4119781..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/RGBLike.java
++++ /dev/null
+@@ -1,17 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.util;
+-
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Range;
+-
+-public interface RGBLike {
+-   @Range(from = 0L, to = 255L) int red();
+-
+-   @Range(from = 0L, to = 255L) int green();
+-
+-   @Range(from = 0L, to = 255L) int blue();
+-
+-   @NotNull
+-   default HSVLike asHSV() {
+-      return HSVLike.fromRGB(this.red(), this.green(), this.blue());
+-   }
+-}

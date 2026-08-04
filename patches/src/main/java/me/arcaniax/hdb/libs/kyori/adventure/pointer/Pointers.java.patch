@@ -1,0 +1,57 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/pointer/Pointers.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/pointer/Pointers.java
+deleted file mode 100644
+index 642ea66..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/pointer/Pointers.java
++++ /dev/null
+@@ -1,51 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.pointer;
+-
+-import java.util.Optional;
+-import java.util.function.Supplier;
+-import me.arcaniax.hdb.libs.kyori.adventure.builder.AbstractBuilder;
+-import me.arcaniax.hdb.libs.kyori.adventure.util.Buildable;
+-import org.jetbrains.annotations.Contract;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-import org.jetbrains.annotations.UnknownNullability;
+-
+-public interface Pointers extends Buildable<Pointers, Pointers.Builder> {
+-   @Contract(pure = true)
+-   @NotNull
+-   static Pointers empty() {
+-      return PointersImpl.EMPTY;
+-   }
+-
+-   @Contract(pure = true)
+-   @NotNull
+-   static Pointers.Builder builder() {
+-      return new PointersImpl.BuilderImpl();
+-   }
+-
+-   @NotNull
+-   <T> Optional<T> get(@NotNull final Pointer<T> pointer);
+-
+-   @Contract("_, null -> _; _, !null -> !null")
+-   @Nullable
+-   default <T> T getOrDefault(@NotNull final Pointer<T> pointer, @Nullable final T defaultValue) {
+-      return this.get(pointer).orElse(defaultValue);
+-   }
+-
+-   default <T> @UnknownNullability T getOrDefaultFrom(@NotNull final Pointer<T> pointer, @NotNull final Supplier<? extends T> defaultValue) {
+-      return this.get(pointer).orElseGet(defaultValue);
+-   }
+-
+-   <T> boolean supports(@NotNull final Pointer<T> pointer);
+-
+-   interface Builder extends AbstractBuilder<Pointers>, Buildable.Builder<Pointers> {
+-      @Contract("_, _ -> this")
+-      @NotNull
+-      default <T> Pointers.Builder withStatic(@NotNull final Pointer<T> pointer, @Nullable final T value) {
+-         return this.withDynamic(pointer, () -> value);
+-      }
+-
+-      @Contract("_, _ -> this")
+-      @NotNull
+-      <T> Pointers.Builder withDynamic(@NotNull final Pointer<T> pointer, @NotNull Supplier<@Nullable T> value);
+-   }
+-}

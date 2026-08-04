@@ -1,0 +1,16 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/ComponentIteratorFlag.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/ComponentIteratorFlag.java
+deleted file mode 100644
+index 59a564b..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/ComponentIteratorFlag.java
++++ /dev/null
+@@ -1,10 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-import org.jetbrains.annotations.ApiStatus.NonExtendable;
+-
+-@NonExtendable
+-public enum ComponentIteratorFlag {
+-   INCLUDE_HOVER_SHOW_ENTITY_NAME,
+-   INCLUDE_HOVER_SHOW_TEXT_COMPONENT,
+-   INCLUDE_TRANSLATABLE_COMPONENT_ARGUMENTS;
+-}

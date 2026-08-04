@@ -1,0 +1,50 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/serializer/StyleClaimingResolverImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/serializer/StyleClaimingResolverImpl.java
+deleted file mode 100644
+index 7dd0438..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/serializer/StyleClaimingResolverImpl.java
++++ /dev/null
+@@ -1,44 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer;
+-
+-import java.util.Set;
+-import java.util.function.BiFunction;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.Context;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class StyleClaimingResolverImpl implements TagResolver, SerializableResolver.Single {
+-   @NotNull
+-   private final Set<String> names;
+-   @NotNull
+-   private final BiFunction<ArgumentQueue, Context, Tag> handler;
+-   @NotNull
+-   private final StyleClaim<?> styleClaim;
+-
+-   StyleClaimingResolverImpl(
+-      @NotNull final Set<String> names, @NotNull final BiFunction<ArgumentQueue, Context, Tag> handler, @NotNull final StyleClaim<?> styleClaim
+-   ) {
+-      this.names = namesx;
+-      this.handler = handlerx;
+-      this.styleClaim = styleClaimx;
+-   }
+-
+-   @Nullable
+-   @Override
+-   public Tag resolve(@NotNull final String name, @NotNull final ArgumentQueue arguments, @NotNull final Context ctx) {
+-      return !this.names.contains(name) ? null : this.handler.apply(arguments, ctx);
+-   }
+-
+-   @Override
+-   public boolean has(@NotNull final String name) {
+-      return this.names.contains(name);
+-   }
+-
+-   @Nullable
+-   @Override
+-   public StyleClaim<?> claimStyle() {
+-      return this.styleClaim;
+-   }
+-}

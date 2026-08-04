@@ -1,0 +1,35 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/Context.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/Context.java
+deleted file mode 100644
+index d23cb61..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/Context.java
++++ /dev/null
+@@ -1,29 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-import org.jetbrains.annotations.ApiStatus.NonExtendable;
+-
+-@NonExtendable
+-public interface Context {
+-   @NotNull
+-   Component deserialize(@NotNull final String message);
+-
+-   @NotNull
+-   Component deserialize(@NotNull final String message, @NotNull final TagResolver resolver);
+-
+-   @NotNull
+-   Component deserialize(@NotNull final String message, @NotNull final TagResolver... resolvers);
+-
+-   @NotNull
+-   ParsingException newException(@NotNull final String message, @NotNull final ArgumentQueue tags);
+-
+-   @NotNull
+-   ParsingException newException(@NotNull final String message);
+-
+-   @NotNull
+-   ParsingException newException(@NotNull final String message, @Nullable final Throwable cause, @NotNull final ArgumentQueue args);
+-}

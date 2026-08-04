@@ -1,0 +1,12 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/IntFunction2.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/IntFunction2.java
+deleted file mode 100644
+index 1e7174f..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/IntFunction2.java
++++ /dev/null
+@@ -1,6 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.util;
+-
+-@FunctionalInterface
+-public interface IntFunction2<R> {
+-   R apply(final int first, final int second);
+-}

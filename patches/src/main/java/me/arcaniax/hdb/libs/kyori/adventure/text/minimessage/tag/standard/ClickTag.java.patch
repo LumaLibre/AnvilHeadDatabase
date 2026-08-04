@@ -1,0 +1,44 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/ClickTag.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/ClickTag.java
+deleted file mode 100644
+index c4e76d7..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/ClickTag.java
++++ /dev/null
+@@ -1,38 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.standard;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.text.event.ClickEvent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.Context;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.QuotingOverride;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.StyleClaim;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-
+-final class ClickTag {
+-   private static final String CLICK = "click";
+-   static final TagResolver RESOLVER = SerializableResolver.claimingStyle(
+-      "click",
+-      ClickTag::create,
+-      StyleClaim.claim(
+-         "click",
+-         Style::clickEvent,
+-         (var0, var1) -> var1.tag("click").argument(ClickEvent.Action.NAMES.key(var0.action())).argument(var0.value(), QuotingOverride.QUOTED)
+-      )
+-   );
+-
+-   private ClickTag() {
+-   }
+-
+-   static Tag create(final ArgumentQueue args, final Context ctx) {
+-      String var2 = args.popOr(() -> "A click tag requires an action of one of " + ClickEvent.Action.NAMES.keys()).lowerValue();
+-      ClickEvent.Action var3 = ClickEvent.Action.NAMES.value(var2);
+-      if (var3 == null) {
+-         throw ctx.newException("Unknown click event action '" + var2 + "'", args);
+-      }
+-
+-      String var4 = args.popOr("Click event actions require a value").value();
+-      return Tag.styling(ClickEvent.clickEvent(var3, var4));
+-   }
+-}

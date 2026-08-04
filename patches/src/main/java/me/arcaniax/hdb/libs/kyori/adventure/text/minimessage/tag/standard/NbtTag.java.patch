@@ -1,0 +1,104 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/NbtTag.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/NbtTag.java
+deleted file mode 100644
+index e6e03dd..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/NbtTag.java
++++ /dev/null
+@@ -1,98 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.standard;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.key.Key;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.BlockNBTComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.EntityNBTComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.NBTComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.NBTComponentBuilder;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.StorageNBTComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.Context;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.Emitable;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class NbtTag {
+-   private static final String NBT = "nbt";
+-   private static final String DATA = "data";
+-   private static final String BLOCK = "block";
+-   private static final String ENTITY = "entity";
+-   private static final String STORAGE = "storage";
+-   private static final String INTERPRET = "interpret";
+-   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(StandardTags.names("nbt", "data"), NbtTag::resolve, NbtTag::emit);
+-
+-   private NbtTag() {
+-   }
+-
+-   static Tag resolve(final ArgumentQueue args, final Context ctx) {
+-      String var2 = args.popOr("a type of block, entity, or storage is required").lowerValue();
+-      NBTComponentBuilder var3;
+-      if ("block".equals(var2)) {
+-         String var4 = args.popOr("A position is required").value();
+-
+-         try {
+-            var3 = Component.blockNBT().pos(BlockNBTComponent.Pos.fromString(var4));
+-         } catch (IllegalArgumentException var6) {
+-            throw ctx.newException(var6.getMessage(), args);
+-         }
+-      } else if ("entity".equals(var2)) {
+-         var3 = Component.entityNBT().selector(args.popOr("A selector is required").value());
+-      } else {
+-         if (!"storage".equals(var2)) {
+-            throw ctx.newException("Unknown nbt tag type '" + var2 + "'", args);
+-         }
+-
+-         var3 = Component.storageNBT().storage(Key.key(args.popOr("A storage key is required").value()));
+-      }
+-
+-      var3.nbtPath(args.popOr("An NBT path is required").value());
+-      if (args.hasNext()) {
+-         String var7 = args.pop().value();
+-         if ("interpret".equalsIgnoreCase(var7)) {
+-            var3.interpret(true);
+-         } else {
+-            var3.separator(ctx.deserialize(var7));
+-            if (args.hasNext() && args.pop().value().equalsIgnoreCase("interpret")) {
+-               var3.interpret(true);
+-            }
+-         }
+-      }
+-
+-      return Tag.inserting(var3.build());
+-   }
+-
+-   @Nullable
+-   static Emitable emit(final Component comp) {
+-      String var1;
+-      String var2;
+-      if (comp instanceof BlockNBTComponent) {
+-         var1 = "block";
+-         var2 = ((BlockNBTComponent)comp).pos().asString();
+-      } else if (comp instanceof EntityNBTComponent) {
+-         var1 = "entity";
+-         var2 = ((EntityNBTComponent)comp).selector();
+-      } else {
+-         if (!(comp instanceof StorageNBTComponent)) {
+-            return null;
+-         }
+-
+-         var1 = "storage";
+-         var2 = ((StorageNBTComponent)comp).storage().asString();
+-      }
+-
+-      return var3 -> {
+-         NBTComponent var4 = (NBTComponent)comp;
+-         var3.tag("nbt").argument(var1).argument(var2).argument(var4.nbtPath());
+-         if (var4.separator() != null) {
+-            var3.argument(var4.separator());
+-         }
+-
+-         if (var4.interpret()) {
+-            var3.argument("interpret");
+-         }
+-      };
+-   }
+-}

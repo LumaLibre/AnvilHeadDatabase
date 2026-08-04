@@ -1,0 +1,67 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/TranslatableFallbackTag.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/TranslatableFallbackTag.java
+deleted file mode 100644
+index 853df13..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/TranslatableFallbackTag.java
++++ /dev/null
+@@ -1,61 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.standard;
+-
+-import java.util.ArrayList;
+-import java.util.Collections;
+-import java.util.List;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.TranslatableComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.Context;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.Emitable;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class TranslatableFallbackTag {
+-   private static final String TR_OR = "tr_or";
+-   private static final String TRANSLATE_OR = "translate_or";
+-   private static final String LANG_OR = "lang_or";
+-   static final TagResolver RESOLVER = SerializableResolver.claimingComponent(
+-      StandardTags.names("lang_or", "translate_or", "tr_or"), TranslatableFallbackTag::create, TranslatableFallbackTag::claim
+-   );
+-
+-   private TranslatableFallbackTag() {
+-   }
+-
+-   static Tag create(final ArgumentQueue args, final Context ctx) {
+-      String var2 = args.popOr("A translation key is required").value();
+-      String var3 = args.popOr("A fallback messages is required").value();
+-      List var4;
+-      if (args.hasNext()) {
+-         var4 = new ArrayList();
+-
+-         while (args.hasNext()) {
+-            var4.add(ctx.deserialize(args.pop().value()));
+-         }
+-      } else {
+-         var4 = Collections.emptyList();
+-      }
+-
+-      return Tag.inserting(Component.translatable(var2, var3, var4));
+-   }
+-
+-   @Nullable
+-   static Emitable claim(final Component input) {
+-      if (input instanceof TranslatableComponent && ((TranslatableComponent)input).fallback() != null) {
+-         TranslatableComponent var1 = (TranslatableComponent)input;
+-         return var1x -> {
+-            var1x.tag("lang_or");
+-            var1x.argument(var1.key());
+-            var1x.argument(var1.fallback());
+-
+-            for (Component var3 : var1.args()) {
+-               var1x.argument(var3);
+-            }
+-         };
+-      } else {
+-         return null;
+-      }
+-   }
+-}

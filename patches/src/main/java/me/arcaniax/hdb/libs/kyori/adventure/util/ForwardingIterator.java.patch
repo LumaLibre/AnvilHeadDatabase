@@ -1,0 +1,35 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/ForwardingIterator.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/ForwardingIterator.java
+deleted file mode 100644
+index 3b83aef..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/ForwardingIterator.java
++++ /dev/null
+@@ -1,29 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.util;
+-
+-import java.util.Iterator;
+-import java.util.Objects;
+-import java.util.Spliterator;
+-import java.util.function.Supplier;
+-import org.jetbrains.annotations.NotNull;
+-
+-public final class ForwardingIterator<T> implements Iterable<T> {
+-   private final Supplier<Iterator<T>> iterator;
+-   private final Supplier<Spliterator<T>> spliterator;
+-
+-   public ForwardingIterator(@NotNull final Supplier<Iterator<T>> iterator, @NotNull final Supplier<Spliterator<T>> spliterator) {
+-      this.iterator = Objects.requireNonNull(iteratorx, "iterator");
+-      this.spliterator = Objects.requireNonNull(spliteratorx, "spliterator");
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Iterator<T> iterator() {
+-      return this.iterator.get();
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Spliterator<T> spliterator() {
+-      return this.spliterator.get();
+-   }
+-}

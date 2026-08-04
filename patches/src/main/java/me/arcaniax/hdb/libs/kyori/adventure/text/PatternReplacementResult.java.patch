@@ -1,0 +1,13 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/PatternReplacementResult.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/PatternReplacementResult.java
+deleted file mode 100644
+index db70aac..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/PatternReplacementResult.java
++++ /dev/null
+@@ -1,7 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-public enum PatternReplacementResult {
+-   REPLACE,
+-   CONTINUE,
+-   STOP;
+-}

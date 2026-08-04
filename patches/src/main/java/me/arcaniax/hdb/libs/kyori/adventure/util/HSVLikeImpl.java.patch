@@ -1,0 +1,71 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/HSVLikeImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/HSVLikeImpl.java
+deleted file mode 100644
+index e5b4dfa..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/HSVLikeImpl.java
++++ /dev/null
+@@ -1,65 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.util;
+-
+-import java.util.Objects;
+-import me.arcaniax.hdb.libs.kyori.adventure.internal.Internals;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class HSVLikeImpl implements HSVLike {
+-   private final float h;
+-   private final float s;
+-   private final float v;
+-
+-   HSVLikeImpl(final float h, final float s, final float v) {
+-      requireInsideRange(hx, "h");
+-      requireInsideRange(sx, "s");
+-      requireInsideRange(vx, "v");
+-      this.h = hx;
+-      this.s = sx;
+-      this.v = vx;
+-   }
+-
+-   @Override
+-   public float h() {
+-      return this.h;
+-   }
+-
+-   @Override
+-   public float s() {
+-      return this.s;
+-   }
+-
+-   @Override
+-   public float v() {
+-      return this.v;
+-   }
+-
+-   private static void requireInsideRange(final float number, final String name) {
+-      if (number < 0.0F || 1.0F < number) {
+-         throw new IllegalArgumentException(name + " (" + number + ") is not inside the required range: [0,1]");
+-      }
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (this == other) {
+-         return true;
+-      }
+-
+-      if (!(other instanceof HSVLikeImpl)) {
+-         return false;
+-      }
+-
+-      HSVLikeImpl var2 = (HSVLikeImpl)other;
+-      return ShadyPines.equals(var2.h, this.h) && ShadyPines.equals(var2.s, this.s) && ShadyPines.equals(var2.v, this.v);
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      return Objects.hash(this.h, this.s, this.v);
+-   }
+-
+-   @Override
+-   public String toString() {
+-      return Internals.toString(this);
+-   }
+-}

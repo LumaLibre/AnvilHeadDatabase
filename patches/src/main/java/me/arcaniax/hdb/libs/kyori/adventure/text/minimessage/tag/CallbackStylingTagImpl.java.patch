@@ -1,0 +1,54 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/CallbackStylingTagImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/CallbackStylingTagImpl.java
+deleted file mode 100644
+index 4e7cd29..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/CallbackStylingTagImpl.java
++++ /dev/null
+@@ -1,48 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag;
+-
+-import java.util.Objects;
+-import java.util.function.Consumer;
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import org.jetbrains.annotations.NotNull;
+-
+-final class CallbackStylingTagImpl extends AbstractTag implements Inserting {
+-   private final Consumer<Style.Builder> styles;
+-
+-   CallbackStylingTagImpl(final Consumer<Style.Builder> styles) {
+-      this.styles = stylesx;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Component value() {
+-      return Component.text("", Style.style(this.styles));
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      return Objects.hash(this.styles);
+-   }
+-
+-   @Override
+-   public boolean equals(final Object other) {
+-      if (this == other) {
+-         return true;
+-      }
+-
+-      if (!(other instanceof CallbackStylingTagImpl)) {
+-         return false;
+-      }
+-
+-      CallbackStylingTagImpl var2 = (CallbackStylingTagImpl)other;
+-      return Objects.equals(this.styles, var2.styles);
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.of(ExaminableProperty.of("styles", this.styles));
+-   }
+-}

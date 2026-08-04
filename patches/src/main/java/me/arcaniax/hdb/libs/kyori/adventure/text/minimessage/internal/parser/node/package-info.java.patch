@@ -1,0 +1,10 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/parser/node/package-info.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/parser/node/package-info.java
+deleted file mode 100644
+index c7c96a5..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/parser/node/package-info.java
++++ /dev/null
+@@ -1,4 +0,0 @@
+-@Internal
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.parser.node;
+-
+-import org.jetbrains.annotations.ApiStatus.Internal;

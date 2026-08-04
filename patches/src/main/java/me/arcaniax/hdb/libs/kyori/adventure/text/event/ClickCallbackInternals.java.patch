@@ -1,0 +1,29 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/event/ClickCallbackInternals.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/event/ClickCallbackInternals.java
+deleted file mode 100644
+index c9fdbd7..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/event/ClickCallbackInternals.java
++++ /dev/null
+@@ -1,23 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.event;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.audience.Audience;
+-import me.arcaniax.hdb.libs.kyori.adventure.permission.PermissionChecker;
+-import me.arcaniax.hdb.libs.kyori.adventure.util.Services;
+-import me.arcaniax.hdb.libs.kyori.adventure.util.TriState;
+-import org.jetbrains.annotations.NotNull;
+-
+-final class ClickCallbackInternals {
+-   static final PermissionChecker ALWAYS_FALSE = PermissionChecker.always(TriState.FALSE);
+-   static final ClickCallback.Provider PROVIDER = Services.service(ClickCallback.Provider.class).orElseGet(ClickCallbackInternals.Fallback::new);
+-
+-   private ClickCallbackInternals() {
+-   }
+-
+-   static final class Fallback implements ClickCallback.Provider {
+-      @NotNull
+-      @Override
+-      public ClickEvent create(@NotNull final ClickCallback<Audience> callback, final ClickCallback.@NotNull Options options) {
+-         return ClickEvent.suggestCommand("Callbacks are not supported on this platform!");
+-      }
+-   }
+-}

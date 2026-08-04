@@ -1,0 +1,20 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/Ticks.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/Ticks.java
+deleted file mode 100644
+index 24eb114..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/Ticks.java
++++ /dev/null
+@@ -1,14 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.util;
+-
+-import java.time.Duration;
+-import org.jetbrains.annotations.NotNull;
+-
+-public interface Ticks {
+-   int TICKS_PER_SECOND = 20;
+-   long SINGLE_TICK_DURATION_MS = 50L;
+-
+-   @NotNull
+-   static Duration duration(final long ticks) {
+-      return Duration.ofMillis(ticks * 50L);
+-   }
+-}

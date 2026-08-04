@@ -1,0 +1,12 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/serializer/QuotingOverride.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/serializer/QuotingOverride.java
+deleted file mode 100644
+index d30673f..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/serializer/QuotingOverride.java
++++ /dev/null
+@@ -1,6 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer;
+-
+-public enum QuotingOverride {
+-   UNQUOTED,
+-   QUOTED;
+-}

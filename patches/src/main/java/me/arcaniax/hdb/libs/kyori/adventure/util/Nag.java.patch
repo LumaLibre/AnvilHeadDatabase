@@ -1,0 +1,21 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/Nag.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/Nag.java
+deleted file mode 100644
+index ca16514..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/Nag.java
++++ /dev/null
+@@ -1,15 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.util;
+-
+-import org.jetbrains.annotations.NotNull;
+-
+-public abstract class Nag extends RuntimeException {
+-   private static final long serialVersionUID = -695562541413409498L;
+-
+-   public static void print(@NotNull final Nag nag) {
+-      nag.printStackTrace();
+-   }
+-
+-   protected Nag(final String message) {
+-      super(message);
+-   }
+-}

@@ -1,0 +1,65 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/key/KeyedValueImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/key/KeyedValueImpl.java
+deleted file mode 100644
+index f160747..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/key/KeyedValueImpl.java
++++ /dev/null
+@@ -1,59 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.key;
+-
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.examination.Examinable;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import me.arcaniax.hdb.libs.kyori.examination.string.StringExaminer;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class KeyedValueImpl<T> implements Examinable, KeyedValue<T> {
+-   private final Key key;
+-   private final T value;
+-
+-   KeyedValueImpl(final Key key, final T value) {
+-      this.key = keyx;
+-      this.value = (T)valuex;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Key key() {
+-      return this.key;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public T value() {
+-      return this.value;
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (this == other) {
+-         return true;
+-      } else if (other != null && this.getClass() == other.getClass()) {
+-         KeyedValueImpl var2 = (KeyedValueImpl)other;
+-         return this.key.equals(var2.key) && this.value.equals(var2.value);
+-      } else {
+-         return false;
+-      }
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      int var1 = this.key.hashCode();
+-      return 31 * var1 + this.value.hashCode();
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.of(ExaminableProperty.of("key", this.key), ExaminableProperty.of("value", this.value));
+-   }
+-
+-   @Override
+-   public String toString() {
+-      return this.examine(StringExaminer.simpleEscaping());
+-   }
+-}

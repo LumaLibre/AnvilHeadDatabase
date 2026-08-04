@@ -1,0 +1,16 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/audience/ForwardingAudienceOverrideNotRequired.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/audience/ForwardingAudienceOverrideNotRequired.java
+deleted file mode 100644
+index 62ab92d..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/audience/ForwardingAudienceOverrideNotRequired.java
++++ /dev/null
+@@ -1,10 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.audience;
+-
+-import java.lang.annotation.Retention;
+-import java.lang.annotation.RetentionPolicy;
+-import org.jetbrains.annotations.ApiStatus.Internal;
+-
+-@Retention(RetentionPolicy.RUNTIME)
+-@Internal
+-@interface ForwardingAudienceOverrideNotRequired {
+-}

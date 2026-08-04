@@ -1,0 +1,61 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/serializer/StyleClaimImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/serializer/StyleClaimImpl.java
+deleted file mode 100644
+index 92cc26b..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/serializer/StyleClaimImpl.java
++++ /dev/null
+@@ -1,55 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer;
+-
+-import java.util.Objects;
+-import java.util.function.BiConsumer;
+-import java.util.function.Function;
+-import java.util.function.Predicate;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-class StyleClaimImpl<V> implements StyleClaim<V> {
+-   private final String claimKey;
+-   private final Function<Style, V> lens;
+-   private final Predicate<V> filter;
+-   private final BiConsumer<V, TokenEmitter> emitable;
+-
+-   StyleClaimImpl(final String claimKey, final Function<Style, @Nullable V> lens, final Predicate<V> filter, final BiConsumer<V, TokenEmitter> emitable) {
+-      this.claimKey = claimKeyx;
+-      this.lens = lensx;
+-      this.filter = filterx;
+-      this.emitable = emitablex;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public String claimKey() {
+-      return this.claimKey;
+-   }
+-
+-   @Nullable
+-   @Override
+-   public Emitable apply(@NotNull final Style style) {
+-      Object var2 = this.lens.apply(style);
+-      return var2 != null && this.filter.test((V)var2) ? var2x -> this.emitable.accept((V)var2, var2x) : null;
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      return Objects.hash(this.claimKey);
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (this == other) {
+-         return true;
+-      }
+-
+-      if (!(other instanceof StyleClaimImpl)) {
+-         return false;
+-      }
+-
+-      StyleClaimImpl var2 = (StyleClaimImpl)other;
+-      return Objects.equals(this.claimKey, var2.claimKey);
+-   }
+-}

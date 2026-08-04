@@ -1,0 +1,464 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/format/StyleImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/format/StyleImpl.java
+deleted file mode 100644
+index 3274c17..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/format/StyleImpl.java
++++ /dev/null
+@@ -1,458 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.format;
+-
+-import java.util.EnumMap;
+-import java.util.Map;
+-import java.util.Objects;
+-import java.util.Set;
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.adventure.internal.Internals;
+-import me.arcaniax.hdb.libs.kyori.adventure.key.Key;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.event.ClickEvent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.event.HoverEvent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.event.HoverEventSource;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class StyleImpl implements Style {
+-   static final StyleImpl EMPTY = new StyleImpl(null, null, DecorationMap.EMPTY, null, null, null);
+-   @Nullable
+-   final Key font;
+-   @Nullable
+-   final TextColor color;
+-   @NotNull
+-   final DecorationMap decorations;
+-   @Nullable
+-   final ClickEvent clickEvent;
+-   @Nullable
+-   final HoverEvent<?> hoverEvent;
+-   @Nullable
+-   final String insertion;
+-
+-   StyleImpl(
+-      @Nullable final Key font,
+-      @Nullable final TextColor color,
+-      @NotNull final Map<TextDecoration, TextDecoration.State> decorations,
+-      @Nullable final ClickEvent clickEvent,
+-      @Nullable final HoverEvent<?> hoverEvent,
+-      @Nullable final String insertion
+-   ) {
+-      this.font = fontx;
+-      this.color = colorx;
+-      this.decorations = DecorationMap.fromMap(decorationsx);
+-      this.clickEvent = clickEventx;
+-      this.hoverEvent = hoverEventx;
+-      this.insertion = insertionx;
+-   }
+-
+-   @Nullable
+-   @Override
+-   public Key font() {
+-      return this.font;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Style font(@Nullable final Key font) {
+-      return Objects.equals(this.font, fontx) ? this : new StyleImpl(fontx, this.color, this.decorations, this.clickEvent, this.hoverEvent, this.insertion);
+-   }
+-
+-   @Nullable
+-   @Override
+-   public TextColor color() {
+-      return this.color;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Style color(@Nullable final TextColor color) {
+-      return Objects.equals(this.color, colorx) ? this : new StyleImpl(this.font, colorx, this.decorations, this.clickEvent, this.hoverEvent, this.insertion);
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Style colorIfAbsent(@Nullable final TextColor color) {
+-      return this.color == null ? this.color(colorx) : this;
+-   }
+-
+-   @Override
+-   public TextDecoration.State decoration(@NotNull final TextDecoration decoration) {
+-      TextDecoration.State var2 = this.decorations.get(decoration);
+-      if (var2 != null) {
+-         return var2;
+-      } else {
+-         throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+-      }
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Style decoration(@NotNull final TextDecoration decoration, final TextDecoration.@NotNull State state) {
+-      Objects.requireNonNull(state, "state");
+-      return this.decoration(decoration) == state
+-         ? this
+-         : new StyleImpl(this.font, this.color, this.decorations.with(decoration, state), this.clickEvent, this.hoverEvent, this.insertion);
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Style decorationIfAbsent(@NotNull final TextDecoration decoration, final TextDecoration.State state) {
+-      Objects.requireNonNull(state, "state");
+-      TextDecoration.State var3 = this.decorations.get(decoration);
+-      if (var3 == TextDecoration.State.NOT_SET) {
+-         return new StyleImpl(this.font, this.color, this.decorations.with(decoration, state), this.clickEvent, this.hoverEvent, this.insertion);
+-      } else if (var3 != null) {
+-         return this;
+-      } else {
+-         throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+-      }
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Map<TextDecoration, TextDecoration.State> decorations() {
+-      return this.decorations;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Style decorations(@NotNull final Map<TextDecoration, TextDecoration.State> decorations) {
+-      return new StyleImpl(this.font, this.color, DecorationMap.merge(decorationsx, this.decorations), this.clickEvent, this.hoverEvent, this.insertion);
+-   }
+-
+-   @Nullable
+-   @Override
+-   public ClickEvent clickEvent() {
+-      return this.clickEvent;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Style clickEvent(@Nullable final ClickEvent event) {
+-      return new StyleImpl(this.font, this.color, this.decorations, event, this.hoverEvent, this.insertion);
+-   }
+-
+-   @Nullable
+-   @Override
+-   public HoverEvent<?> hoverEvent() {
+-      return this.hoverEvent;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Style hoverEvent(@Nullable final HoverEventSource<?> source) {
+-      return new StyleImpl(this.font, this.color, this.decorations, this.clickEvent, HoverEventSource.unbox(source), this.insertion);
+-   }
+-
+-   @Nullable
+-   @Override
+-   public String insertion() {
+-      return this.insertion;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Style insertion(@Nullable final String insertion) {
+-      return Objects.equals(this.insertion, insertionx)
+-         ? this
+-         : new StyleImpl(this.font, this.color, this.decorations, this.clickEvent, this.hoverEvent, insertionx);
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Style merge(@NotNull final Style that, final Style.Merge.@NotNull Strategy strategy, @NotNull final Set<Style.Merge> merges) {
+-      if (nothingToMerge(that, strategy, merges)) {
+-         return this;
+-      }
+-
+-      if (this.isEmpty() && Style.Merge.hasAll(merges)) {
+-         return that;
+-      }
+-
+-      Style.Builder var4 = this.toBuilder();
+-      var4.merge(that, strategy, merges);
+-      return var4.build();
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Style unmerge(@NotNull final Style that) {
+-      if (this.isEmpty()) {
+-         return this;
+-      }
+-
+-      StyleImpl.BuilderImpl var2 = new StyleImpl.BuilderImpl(this);
+-      if (Objects.equals(this.font(), that.font())) {
+-         var2.font(null);
+-      }
+-
+-      if (Objects.equals(this.color(), that.color())) {
+-         var2.color(null);
+-      }
+-
+-      int var3 = 0;
+-
+-      for (int var4 = DecorationMap.DECORATIONS.length; var3 < var4; var3++) {
+-         TextDecoration var5 = DecorationMap.DECORATIONS[var3];
+-         if (this.decoration(var5) == that.decoration(var5)) {
+-            var2.decoration(var5, TextDecoration.State.NOT_SET);
+-         }
+-      }
+-
+-      if (Objects.equals(this.clickEvent(), that.clickEvent())) {
+-         var2.clickEvent(null);
+-      }
+-
+-      if (Objects.equals(this.hoverEvent(), that.hoverEvent())) {
+-         var2.hoverEvent(null);
+-      }
+-
+-      if (Objects.equals(this.insertion(), that.insertion())) {
+-         var2.insertion(null);
+-      }
+-
+-      return var2.build();
+-   }
+-
+-   static boolean nothingToMerge(@NotNull final Style mergeFrom, final Style.Merge.@NotNull Strategy strategy, @NotNull final Set<Style.Merge> merges) {
+-      if (strategy == Style.Merge.Strategy.NEVER) {
+-         return true;
+-      } else {
+-         return mergeFrom.isEmpty() ? true : merges.isEmpty();
+-      }
+-   }
+-
+-   @Override
+-   public boolean isEmpty() {
+-      return this == EMPTY;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Style.Builder toBuilder() {
+-      return new StyleImpl.BuilderImpl(this);
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.concat(
+-         this.decorations.examinableProperties(),
+-         Stream.of(
+-            ExaminableProperty.of("color", this.color),
+-            ExaminableProperty.of("clickEvent", this.clickEvent),
+-            ExaminableProperty.of("hoverEvent", this.hoverEvent),
+-            ExaminableProperty.of("insertion", this.insertion),
+-            ExaminableProperty.of("font", this.font)
+-         )
+-      );
+-   }
+-
+-   @NotNull
+-   @Override
+-   public String toString() {
+-      return Internals.toString(this);
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (this == other) {
+-         return true;
+-      }
+-
+-      if (!(other instanceof StyleImpl)) {
+-         return false;
+-      }
+-
+-      StyleImpl var2 = (StyleImpl)other;
+-      return Objects.equals(this.color, var2.color)
+-         && this.decorations.equals(var2.decorations)
+-         && Objects.equals(this.clickEvent, var2.clickEvent)
+-         && Objects.equals(this.hoverEvent, var2.hoverEvent)
+-         && Objects.equals(this.insertion, var2.insertion)
+-         && Objects.equals(this.font, var2.font);
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      int var1 = Objects.hashCode(this.color);
+-      var1 = 31 * var1 + this.decorations.hashCode();
+-      var1 = 31 * var1 + Objects.hashCode(this.clickEvent);
+-      var1 = 31 * var1 + Objects.hashCode(this.hoverEvent);
+-      var1 = 31 * var1 + Objects.hashCode(this.insertion);
+-      return 31 * var1 + Objects.hashCode(this.font);
+-   }
+-
+-   static final class BuilderImpl implements Style.Builder {
+-      @Nullable
+-      Key font;
+-      @Nullable
+-      TextColor color;
+-      final Map<TextDecoration, TextDecoration.State> decorations;
+-      @Nullable
+-      ClickEvent clickEvent;
+-      @Nullable
+-      HoverEvent<?> hoverEvent;
+-      @Nullable
+-      String insertion;
+-
+-      BuilderImpl() {
+-         this.decorations = new EnumMap<>(DecorationMap.EMPTY);
+-      }
+-
+-      BuilderImpl(@NotNull final StyleImpl style) {
+-         this.color = style.color;
+-         this.decorations = new EnumMap<>(style.decorations);
+-         this.clickEvent = style.clickEvent;
+-         this.hoverEvent = style.hoverEvent;
+-         this.insertion = style.insertion;
+-         this.font = style.font;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Style.Builder font(@Nullable final Key font) {
+-         this.font = fontx;
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Style.Builder color(@Nullable final TextColor color) {
+-         this.color = colorx;
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Style.Builder colorIfAbsent(@Nullable final TextColor color) {
+-         if (this.color == null) {
+-            this.color = colorx;
+-         }
+-
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Style.Builder decoration(@NotNull final TextDecoration decoration, final TextDecoration.@NotNull State state) {
+-         Objects.requireNonNull(state, "state");
+-         Objects.requireNonNull(decoration, "decoration");
+-         this.decorations.put(decoration, state);
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Style.Builder decorationIfAbsent(@NotNull final TextDecoration decoration, final TextDecoration.State state) {
+-         Objects.requireNonNull(state, "state");
+-         TextDecoration.State var3 = this.decorations.get(decoration);
+-         if (var3 == TextDecoration.State.NOT_SET) {
+-            this.decorations.put(decoration, state);
+-         }
+-
+-         if (var3 != null) {
+-            return this;
+-         } else {
+-            throw new IllegalArgumentException(String.format("unknown decoration '%s'", decoration));
+-         }
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Style.Builder clickEvent(@Nullable final ClickEvent event) {
+-         this.clickEvent = event;
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Style.Builder hoverEvent(@Nullable final HoverEventSource<?> source) {
+-         this.hoverEvent = HoverEventSource.unbox(source);
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Style.Builder insertion(@Nullable final String insertion) {
+-         this.insertion = insertionx;
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Style.Builder merge(@NotNull final Style that, final Style.Merge.@NotNull Strategy strategy, @NotNull final Set<Style.Merge> merges) {
+-         Objects.requireNonNull(that, "style");
+-         Objects.requireNonNull(strategy, "strategy");
+-         Objects.requireNonNull(merges, "merges");
+-         if (StyleImpl.nothingToMerge(that, strategy, merges)) {
+-            return this;
+-         }
+-
+-         if (merges.contains(Style.Merge.COLOR)) {
+-            TextColor var4 = that.color();
+-            if (var4 != null && (strategy == Style.Merge.Strategy.ALWAYS || strategy == Style.Merge.Strategy.IF_ABSENT_ON_TARGET && this.color == null)) {
+-               this.color(var4);
+-            }
+-         }
+-
+-         if (merges.contains(Style.Merge.DECORATIONS)) {
+-            int var8 = 0;
+-
+-            for (int var5 = DecorationMap.DECORATIONS.length; var8 < var5; var8++) {
+-               TextDecoration var6 = DecorationMap.DECORATIONS[var8];
+-               TextDecoration.State var7 = that.decoration(var6);
+-               if (var7 != TextDecoration.State.NOT_SET) {
+-                  if (strategy == Style.Merge.Strategy.ALWAYS) {
+-                     this.decoration(var6, var7);
+-                  } else if (strategy == Style.Merge.Strategy.IF_ABSENT_ON_TARGET) {
+-                     this.decorationIfAbsent(var6, var7);
+-                  }
+-               }
+-            }
+-         }
+-
+-         if (merges.contains(Style.Merge.EVENTS)) {
+-            ClickEvent var9 = that.clickEvent();
+-            if (var9 != null && (strategy == Style.Merge.Strategy.ALWAYS || strategy == Style.Merge.Strategy.IF_ABSENT_ON_TARGET && this.clickEvent == null)) {
+-               this.clickEvent(var9);
+-            }
+-
+-            HoverEvent var12 = that.hoverEvent();
+-            if (var12 != null && (strategy == Style.Merge.Strategy.ALWAYS || strategy == Style.Merge.Strategy.IF_ABSENT_ON_TARGET && this.hoverEvent == null)) {
+-               this.hoverEvent(var12);
+-            }
+-         }
+-
+-         if (merges.contains(Style.Merge.INSERTION)) {
+-            String var10 = that.insertion();
+-            if (var10 != null && (strategy == Style.Merge.Strategy.ALWAYS || strategy == Style.Merge.Strategy.IF_ABSENT_ON_TARGET && this.insertion == null)) {
+-               this.insertion(var10);
+-            }
+-         }
+-
+-         if (merges.contains(Style.Merge.FONT)) {
+-            Key var11 = that.font();
+-            if (var11 != null && (strategy == Style.Merge.Strategy.ALWAYS || strategy == Style.Merge.Strategy.IF_ABSENT_ON_TARGET && this.font == null)) {
+-               this.font(var11);
+-            }
+-         }
+-
+-         return this;
+-      }
+-
+-      @NotNull
+-      public StyleImpl build() {
+-         return this.isEmpty() ? StyleImpl.EMPTY : new StyleImpl(this.font, this.color, this.decorations, this.clickEvent, this.hoverEvent, this.insertion);
+-      }
+-
+-      private boolean isEmpty() {
+-         return this.color == null
+-            && this.decorations.values().stream().allMatch(var0 -> var0 == TextDecoration.State.NOT_SET)
+-            && this.clickEvent == null
+-            && this.hoverEvent == null
+-            && this.insertion == null
+-            && this.font == null;
+-      }
+-   }
+-}

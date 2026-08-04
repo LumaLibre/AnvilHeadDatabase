@@ -1,0 +1,126 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/GradientTag.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/GradientTag.java
+deleted file mode 100644
+index a91a121..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/GradientTag.java
++++ /dev/null
+@@ -1,120 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.standard;
+-
+-import java.util.ArrayList;
+-import java.util.Arrays;
+-import java.util.Collections;
+-import java.util.List;
+-import java.util.Objects;
+-import java.util.OptionalDouble;
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.TextColor;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.Context;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-import org.jetbrains.annotations.Range;
+-
+-final class GradientTag extends AbstractColorChangingTag {
+-   private static final String GRADIENT = "gradient";
+-   static final TagResolver RESOLVER = TagResolver.resolver("gradient", GradientTag::create);
+-   private int index = 0;
+-   private double multiplier = 1.0;
+-   private final TextColor[] colors;
+-   private @Range(from = -1L, to = 1L) double phase;
+-
+-   static Tag create(final ArgumentQueue args, final Context ctx) {
+-      double var2 = 0.0;
+-      List var4;
+-      if (!args.hasNext()) {
+-         var4 = Collections.emptyList();
+-      } else {
+-         var4 = new ArrayList();
+-
+-         while (args.hasNext()) {
+-            Tag.Argument var5 = args.pop();
+-            if (!args.hasNext()) {
+-               OptionalDouble var6 = var5.asDouble();
+-               if (var6.isPresent()) {
+-                  var2 = var6.getAsDouble();
+-                  if (var2 < -1.0 || var2 > 1.0) {
+-                     throw ctx.newException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0, 1.0] (inclusive).", var2), args);
+-                  }
+-
+-                  if (var4.size() == 1) {
+-                     throw ctx.newException("Invalid gradient, not enough colors. Gradients must have at least two colors.", args);
+-                  }
+-                  break;
+-               }
+-            }
+-
+-            TextColor var7 = ColorTagResolver.resolveColor(var5.value(), ctx);
+-            var4.add(var7);
+-         }
+-      }
+-
+-      return new GradientTag(var2, var4);
+-   }
+-
+-   private GradientTag(final double phase, final List<TextColor> colors) {
+-      if (colorsx.isEmpty()) {
+-         this.colors = new TextColor[]{TextColor.color(16777215), TextColor.color(0)};
+-      } else {
+-         this.colors = colorsx.toArray(new TextColor[0]);
+-      }
+-
+-      if (phasex < 0.0) {
+-         this.phase = 1.0 + phasex;
+-         Collections.reverse(Arrays.asList(this.colors));
+-      } else {
+-         this.phase = phasex;
+-      }
+-   }
+-
+-   @Override
+-   protected void init() {
+-      this.multiplier = this.size() == 1 ? 0.0 : (double)(this.colors.length - 1) / (this.size() - 1);
+-      this.phase = this.phase * (this.colors.length - 1);
+-      this.index = 0;
+-   }
+-
+-   @Override
+-   protected void advanceColor() {
+-      this.index++;
+-   }
+-
+-   @Override
+-   protected TextColor color() {
+-      double var1 = this.index * this.multiplier + this.phase;
+-      int var3 = (int)Math.floor(var1);
+-      int var4 = (int)Math.ceil(var1) % this.colors.length;
+-      int var5 = var3 % this.colors.length;
+-      return TextColor.lerp((float)var1 - var3, this.colors[var5], this.colors[var4]);
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.of(ExaminableProperty.of("phase", this.phase), ExaminableProperty.of("colors", this.colors));
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (this == other) {
+-         return true;
+-      } else if (other != null && this.getClass() == other.getClass()) {
+-         GradientTag var2 = (GradientTag)other;
+-         return this.index == var2.index && this.phase == var2.phase && Arrays.equals(this.colors, var2.colors);
+-      } else {
+-         return false;
+-      }
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      int var1 = Objects.hash(this.index, this.phase);
+-      return 31 * var1 + Arrays.hashCode(this.colors);
+-   }
+-}

@@ -1,0 +1,70 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/Formatter.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/Formatter.java
+deleted file mode 100644
+index d0b4861..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/Formatter.java
++++ /dev/null
+@@ -1,64 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver;
+-
+-import java.text.ChoiceFormat;
+-import java.text.DecimalFormat;
+-import java.text.DecimalFormatSymbols;
+-import java.text.NumberFormat;
+-import java.time.format.DateTimeFormatter;
+-import java.time.temporal.TemporalAccessor;
+-import java.util.Locale;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.TagPattern;
+-import org.jetbrains.annotations.NotNull;
+-
+-public final class Formatter {
+-   private Formatter() {
+-   }
+-
+-   @NotNull
+-   public static TagResolver number(@TagPattern @NotNull final String key, @NotNull final Number number) {
+-      return TagResolver.resolver(key, (var1, var2) -> {
+-         NumberFormat var3;
+-         if (var1.hasNext()) {
+-            String var4 = var1.pop().value();
+-            if (var1.hasNext()) {
+-               String var5 = var1.pop().value();
+-               var3 = new DecimalFormat(var5, new DecimalFormatSymbols(Locale.forLanguageTag(var4)));
+-            } else if (var4.contains(".")) {
+-               var3 = new DecimalFormat(var4, DecimalFormatSymbols.getInstance());
+-            } else {
+-               var3 = DecimalFormat.getInstance(Locale.forLanguageTag(var4));
+-            }
+-         } else {
+-            var3 = DecimalFormat.getInstance();
+-         }
+-
+-         return Tag.inserting(var2.deserialize(var3.format(number)));
+-      });
+-   }
+-
+-   @NotNull
+-   public static TagResolver date(@TagPattern @NotNull final String key, @NotNull final TemporalAccessor time) {
+-      return TagResolver.resolver(key, (var1, var2) -> {
+-         String var3 = var1.popOr("Format expected.").value();
+-         return Tag.inserting(var2.deserialize(DateTimeFormatter.ofPattern(var3).format(time)));
+-      });
+-   }
+-
+-   @NotNull
+-   public static TagResolver choice(@TagPattern @NotNull final String key, final Number number) {
+-      return TagResolver.resolver(key, (var1, var2) -> {
+-         String var3 = var1.popOr("Format expected.").value();
+-         ChoiceFormat var4 = new ChoiceFormat(var3);
+-         return Tag.inserting(var2.deserialize(var4.format(number)));
+-      });
+-   }
+-
+-   public static TagResolver booleanChoice(@TagPattern @NotNull final String key, final boolean value) {
+-      return TagResolver.resolver(key, (var1, var2) -> {
+-         String var3 = var1.popOr("True format expected.").value();
+-         String var4 = var1.popOr("False format expected.").value();
+-         return Tag.inserting(var2.deserialize(value ? var3 : var4));
+-      });
+-   }
+-}

@@ -1,0 +1,37 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/Placeholder.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/Placeholder.java
+deleted file mode 100644
+index dcee290..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/Placeholder.java
++++ /dev/null
+@@ -1,31 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver;
+-
+-import java.util.Objects;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.ComponentLike;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.StyleBuilderApplicable;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.TagPattern;
+-import org.jetbrains.annotations.NotNull;
+-
+-public final class Placeholder {
+-   private Placeholder() {
+-   }
+-
+-   public static TagResolver.@NotNull Single parsed(@TagPattern @NotNull final String key, @NotNull final String value) {
+-      return TagResolver.resolver(key, Tag.preProcessParsed(value));
+-   }
+-
+-   public static TagResolver.@NotNull Single unparsed(@TagPattern @NotNull final String key, @NotNull final String value) {
+-      Objects.requireNonNull(value, "value");
+-      return component(key, Component.text(value));
+-   }
+-
+-   public static TagResolver.@NotNull Single component(@TagPattern @NotNull final String key, @NotNull final ComponentLike value) {
+-      return TagResolver.resolver(key, Tag.selfClosingInserting(value));
+-   }
+-
+-   public static TagResolver.@NotNull Single styling(@TagPattern @NotNull final String key, @NotNull final StyleBuilderApplicable... style) {
+-      return TagResolver.resolver(key, Tag.styling(style));
+-   }
+-}

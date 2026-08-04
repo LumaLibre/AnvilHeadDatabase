@@ -1,0 +1,33 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/EntityNBTComponent.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/EntityNBTComponent.java
+deleted file mode 100644
+index 72362cd..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/EntityNBTComponent.java
++++ /dev/null
+@@ -1,27 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import org.jetbrains.annotations.Contract;
+-import org.jetbrains.annotations.NotNull;
+-
+-public interface EntityNBTComponent extends NBTComponent<EntityNBTComponent, EntityNBTComponent.Builder>, ScopedComponent<EntityNBTComponent> {
+-   @NotNull
+-   String selector();
+-
+-   @Contract(pure = true)
+-   @NotNull
+-   EntityNBTComponent selector(@NotNull final String selector);
+-
+-   @NotNull
+-   @Override
+-   default Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.concat(Stream.of(ExaminableProperty.of("selector", this.selector())), NBTComponent.super.examinableProperties());
+-   }
+-
+-   interface Builder extends NBTComponentBuilder<EntityNBTComponent, EntityNBTComponent.Builder> {
+-      @Contract("_ -> this")
+-      @NotNull
+-      EntityNBTComponent.Builder selector(@NotNull final String selector);
+-   }
+-}

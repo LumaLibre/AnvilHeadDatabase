@@ -1,0 +1,15 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/ComponentApplicable.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/ComponentApplicable.java
+deleted file mode 100644
+index 9c4ef0b..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/ComponentApplicable.java
++++ /dev/null
+@@ -1,9 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-import org.jetbrains.annotations.NotNull;
+-
+-@FunctionalInterface
+-public interface ComponentApplicable {
+-   @NotNull
+-   Component componentApply(@NotNull final Component component);
+-}

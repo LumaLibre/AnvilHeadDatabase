@@ -1,0 +1,10 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/internal/package-info.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/internal/package-info.java
+deleted file mode 100644
+index 89a10c9..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/internal/package-info.java
++++ /dev/null
+@@ -1,4 +0,0 @@
+-@Internal
+-package me.arcaniax.hdb.libs.kyori.adventure.internal;
+-
+-import org.jetbrains.annotations.ApiStatus.Internal;

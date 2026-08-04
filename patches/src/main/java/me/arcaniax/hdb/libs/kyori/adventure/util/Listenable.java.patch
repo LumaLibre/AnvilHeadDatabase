@@ -1,0 +1,30 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/Listenable.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/Listenable.java
+deleted file mode 100644
+index 7c27b47..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/Listenable.java
++++ /dev/null
+@@ -1,24 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.util;
+-
+-import java.util.List;
+-import java.util.concurrent.CopyOnWriteArrayList;
+-import java.util.function.Consumer;
+-import org.jetbrains.annotations.NotNull;
+-
+-public abstract class Listenable<L> {
+-   private final List<L> listeners = new CopyOnWriteArrayList<>();
+-
+-   protected final void forEachListener(@NotNull final Consumer<L> consumer) {
+-      for (Object var3 : this.listeners) {
+-         consumer.accept(var3);
+-      }
+-   }
+-
+-   protected final void addListener0(@NotNull final L listener) {
+-      this.listeners.add((L)listener);
+-   }
+-
+-   protected final void removeListener0(@NotNull final L listener) {
+-      this.listeners.remove(listener);
+-   }
+-}

@@ -1,0 +1,10 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/format/TextFormat.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/format/TextFormat.java
+deleted file mode 100644
+index d8d7550..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/format/TextFormat.java
++++ /dev/null
+@@ -1,4 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.format;
+-
+-public interface TextFormat {
+-}

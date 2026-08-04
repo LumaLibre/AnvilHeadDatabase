@@ -1,0 +1,14 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/serializer/Emitable.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/serializer/Emitable.java
+deleted file mode 100644
+index 835ab17..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/serializer/Emitable.java
++++ /dev/null
+@@ -1,8 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer;
+-
+-import org.jetbrains.annotations.NotNull;
+-
+-@FunctionalInterface
+-public interface Emitable {
+-   void emit(@NotNull final TokenEmitter emitter);
+-}

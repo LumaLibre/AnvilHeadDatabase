@@ -1,0 +1,35 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/InsertionTag.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/InsertionTag.java
+deleted file mode 100644
+index fd49019..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/InsertionTag.java
++++ /dev/null
+@@ -1,29 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.standard;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.Context;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.StyleClaim;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-
+-final class InsertionTag {
+-   private static final String INSERTION = "insert";
+-   static final TagResolver RESOLVER = SerializableResolver.claimingStyle(
+-      "insert", InsertionTag::create, StyleClaim.claim("insert", Style::insertion, InsertionTag::emit)
+-   );
+-
+-   private InsertionTag() {
+-   }
+-
+-   static Tag create(final ArgumentQueue args, final Context ctx) {
+-      String var2 = args.popOr("A value is required to produce an insertion component").value();
+-      return Tag.styling(var1 -> var1.insertion(var2));
+-   }
+-
+-   static void emit(final String insertion, final TokenEmitter emitter) {
+-      emitter.tag("insert").argument(insertion);
+-   }
+-}

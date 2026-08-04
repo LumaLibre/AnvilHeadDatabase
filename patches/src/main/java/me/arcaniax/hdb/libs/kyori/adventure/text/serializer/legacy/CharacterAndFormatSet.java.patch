@@ -1,0 +1,49 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/serializer/legacy/CharacterAndFormatSet.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/serializer/legacy/CharacterAndFormatSet.java
+deleted file mode 100644
+index 6b4cd2b..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/serializer/legacy/CharacterAndFormatSet.java
++++ /dev/null
+@@ -1,43 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.serializer.legacy;
+-
+-import java.util.ArrayList;
+-import java.util.Collections;
+-import java.util.List;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.TextColor;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.TextFormat;
+-
+-final class CharacterAndFormatSet {
+-   static final CharacterAndFormatSet DEFAULT = of(CharacterAndFormat.defaults());
+-   final List<TextFormat> formats;
+-   final List<TextColor> colors;
+-   final String characters;
+-
+-   static CharacterAndFormatSet of(final List<CharacterAndFormat> pairs) {
+-      int var1 = pairs.size();
+-      ArrayList var2 = new ArrayList();
+-      ArrayList var3 = new ArrayList(var1);
+-      StringBuilder var4 = new StringBuilder(var1);
+-
+-      for (int var5 = 0; var5 < var1; var5++) {
+-         CharacterAndFormat var6 = (CharacterAndFormat)pairs.get(var5);
+-         var4.append(var6.character());
+-         TextFormat var7 = var6.format();
+-         var3.add(var7);
+-         if (var7 instanceof TextColor) {
+-            var2.add((TextColor)var7);
+-         }
+-      }
+-
+-      if (var3.size() != var4.length()) {
+-         throw new IllegalStateException("formats length differs from characters length");
+-      } else {
+-         return new CharacterAndFormatSet(Collections.unmodifiableList(var3), Collections.unmodifiableList(var2), var4.toString());
+-      }
+-   }
+-
+-   CharacterAndFormatSet(final List<TextFormat> formats, final List<TextColor> colors, final String characters) {
+-      this.formats = formatsx;
+-      this.colors = colorsx;
+-      this.characters = charactersx;
+-   }
+-}

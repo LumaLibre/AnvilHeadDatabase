@@ -1,0 +1,112 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/DecorationTag.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/DecorationTag.java
+deleted file mode 100644
+index cdc4f43..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/DecorationTag.java
++++ /dev/null
+@@ -1,106 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.standard;
+-
+-import java.util.Collections;
+-import java.util.HashSet;
+-import java.util.LinkedHashMap;
+-import java.util.Map;
+-import java.util.Objects;
+-import java.util.AbstractMap.SimpleImmutableEntry;
+-import java.util.Map.Entry;
+-import java.util.function.BiConsumer;
+-import java.util.stream.Collectors;
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.TextDecoration;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.Context;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.StyleClaim;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class DecorationTag {
+-   private static final String B = "b";
+-   private static final String I = "i";
+-   private static final String EM = "em";
+-   private static final String OBF = "obf";
+-   private static final String ST = "st";
+-   private static final String U = "u";
+-   public static final String REVERT = "!";
+-   static final Map<TextDecoration, TagResolver> RESOLVERS = Stream.of(
+-         resolvers(TextDecoration.OBFUSCATED, "obf"),
+-         resolvers(TextDecoration.BOLD, "b"),
+-         resolvers(TextDecoration.STRIKETHROUGH, "st"),
+-         resolvers(TextDecoration.UNDERLINED, "u"),
+-         resolvers(TextDecoration.ITALIC, "em", "i")
+-      )
+-      .collect(
+-         Collectors.toMap(
+-            Entry::getKey,
+-            var0 -> ((Stream)var0.getValue()).collect(TagResolver.toTagResolver()),
+-            (var0, var1) -> TagResolver.builder().resolver(var0).resolver(var1).build(),
+-            LinkedHashMap::new
+-         )
+-      );
+-   static final TagResolver RESOLVER = TagResolver.resolver(RESOLVERS.values());
+-
+-   static Entry<TextDecoration, Stream<TagResolver>> resolvers(
+-      final TextDecoration decoration, @Nullable final String shortName, @NotNull final String... secondaryAliases
+-   ) {
+-      String var3 = TextDecoration.NAMES.key(decoration);
+-      HashSet var4 = new HashSet();
+-      var4.add(var3);
+-      if (shortName != null) {
+-         var4.add(shortName);
+-      }
+-
+-      Collections.addAll(var4, secondaryAliases);
+-      return new SimpleImmutableEntry<>(
+-         decoration,
+-         Stream.concat(
+-            Stream.of(
+-               SerializableResolver.claimingStyle(
+-                  var4,
+-                  (var1, var2) -> create(decoration, var1, var2),
+-                  claim(decoration, (var2, var3x) -> emit(var3, shortName == null ? var3 : shortName, var2, var3x))
+-               )
+-            ),
+-            var4.stream().map(var1 -> TagResolver.resolver("!" + var1, createNegated(decoration)))
+-         )
+-      );
+-   }
+-
+-   private DecorationTag() {
+-   }
+-
+-   static Tag create(final TextDecoration toApply, final ArgumentQueue args, final Context ctx) {
+-      boolean var3 = !args.hasNext() || !args.pop().isFalse();
+-      return Tag.styling(toApply.withState(var3));
+-   }
+-
+-   static Tag createNegated(final TextDecoration toApply) {
+-      return Tag.styling(toApply.withState(false));
+-   }
+-
+-   @NotNull
+-   static StyleClaim<TextDecoration.State> claim(
+-      @NotNull final TextDecoration decoration, @NotNull final BiConsumer<TextDecoration.State, TokenEmitter> emitable
+-   ) {
+-      Objects.requireNonNull(decoration, "decoration");
+-      return StyleClaim.claim(
+-         "decoration_" + TextDecoration.NAMES.key(decoration), var1 -> var1.decoration(decoration), var0 -> var0 != TextDecoration.State.NOT_SET, emitable
+-      );
+-   }
+-
+-   static void emit(
+-      @NotNull final String longName, @NotNull final String shortName, final TextDecoration.@NotNull State state, @NotNull final TokenEmitter emitter
+-   ) {
+-      if (state == TextDecoration.State.FALSE) {
+-         emitter.tag("!" + longName);
+-      } else {
+-         emitter.tag(longName);
+-      }
+-   }
+-}

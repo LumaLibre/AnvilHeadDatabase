@@ -1,0 +1,94 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/TranslatableComponent.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/TranslatableComponent.java
+deleted file mode 100644
+index a0f0e4e..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/TranslatableComponent.java
++++ /dev/null
+@@ -1,88 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-import java.util.List;
+-import java.util.Objects;
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.adventure.translation.Translatable;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import org.jetbrains.annotations.Contract;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-public interface TranslatableComponent extends BuildableComponent<TranslatableComponent, TranslatableComponent.Builder>, ScopedComponent<TranslatableComponent> {
+-   @NotNull
+-   String key();
+-
+-   @Contract(pure = true)
+-   @NotNull
+-   default TranslatableComponent key(@NotNull final Translatable translatable) {
+-      return this.key(Objects.requireNonNull(translatable, "translatable").translationKey());
+-   }
+-
+-   @Contract(pure = true)
+-   @NotNull
+-   TranslatableComponent key(@NotNull final String key);
+-
+-   @NotNull
+-   List<Component> args();
+-
+-   @Contract(pure = true)
+-   @NotNull
+-   TranslatableComponent args(@NotNull final ComponentLike... args);
+-
+-   @Contract(pure = true)
+-   @NotNull
+-   TranslatableComponent args(@NotNull final List<? extends ComponentLike> args);
+-
+-   @Nullable
+-   String fallback();
+-
+-   @Contract(pure = true)
+-   @NotNull
+-   TranslatableComponent fallback(@Nullable final String fallback);
+-
+-   @NotNull
+-   @Override
+-   default Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.concat(
+-         Stream.of(ExaminableProperty.of("key", this.key()), ExaminableProperty.of("args", this.args()), ExaminableProperty.of("fallback", this.fallback())),
+-         BuildableComponent.super.examinableProperties()
+-      );
+-   }
+-
+-   interface Builder extends ComponentBuilder<TranslatableComponent, TranslatableComponent.Builder> {
+-      @Contract(pure = true)
+-      @NotNull
+-      default TranslatableComponent.Builder key(@NotNull final Translatable translatable) {
+-         return this.key(Objects.requireNonNull(translatable, "translatable").translationKey());
+-      }
+-
+-      @Contract("_ -> this")
+-      @NotNull
+-      TranslatableComponent.Builder key(@NotNull final String key);
+-
+-      @Contract("_ -> this")
+-      @NotNull
+-      TranslatableComponent.Builder args(@NotNull final ComponentBuilder<?, ?> arg);
+-
+-      @Contract("_ -> this")
+-      @NotNull
+-      TranslatableComponent.Builder args(@NotNull final ComponentBuilder<?, ?>... args);
+-
+-      @Contract("_ -> this")
+-      @NotNull
+-      TranslatableComponent.Builder args(@NotNull final Component arg);
+-
+-      @Contract("_ -> this")
+-      @NotNull
+-      TranslatableComponent.Builder args(@NotNull final ComponentLike... args);
+-
+-      @Contract("_ -> this")
+-      @NotNull
+-      TranslatableComponent.Builder args(@NotNull final List<? extends ComponentLike> args);
+-
+-      @Contract("_ -> this")
+-      @NotNull
+-      TranslatableComponent.Builder fallback(@Nullable final String fallback);
+-   }
+-}

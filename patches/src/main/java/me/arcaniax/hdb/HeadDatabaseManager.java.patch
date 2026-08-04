@@ -1,0 +1,93 @@
+diff --git a/src/main/java/me/arcaniax/hdb/HeadDatabaseManager.java b/src/main/java/me/arcaniax/hdb/HeadDatabaseManager.java
+index 42c87dc..0a97ce8 100644
+--- a/src/main/java/me/arcaniax/hdb/HeadDatabaseManager.java
++++ b/src/main/java/me/arcaniax/hdb/HeadDatabaseManager.java
+@@ -194,7 +194,7 @@ public class HeadDatabaseManager {
+    }
+ 
+    private void registerGeyserMC() {
+-      HashSet var1 = new HashSet();
++      HashSet<String> var1 = new HashSet(); // Luma - Decompile
+ 
+       for (Category var3 : this.categories) {
+          if (!var3.cat.equals(CategoryEnum.DISABLED)) {
+@@ -263,8 +263,8 @@ public class HeadDatabaseManager {
+             && !var4.cat.equals(CategoryEnum.CUSTOM4)
+             && !var4.cat.equals(CategoryEnum.CUSTOM5)
+             && !var4.cat.equals(CategoryEnum.ALPHABET)) {
+-            ArrayList var5 = new ArrayList();
+-            ArrayList var6 = new ArrayList();
++            ArrayList<Head> var5 = new ArrayList(); // Luma - Decompile
++            ArrayList<String> var6 = new ArrayList(); // Luma - Decompile
+             int var7 = 0;
+ 
+             for (Head var9 : var4.heads) {
+@@ -292,7 +292,7 @@ public class HeadDatabaseManager {
+ 
+    private void trimAlphabet() {
+       Category var1 = Main.hdbm.getCategory(CategoryEnum.ALPHABET);
+-      ArrayList var2 = new ArrayList();
++      ArrayList<Head> var2 = new ArrayList(); // Luma - Decompile
+ 
+       for (Head var4 : var1.heads) {
+          boolean var5 = false;
+@@ -487,7 +487,7 @@ public class HeadDatabaseManager {
+             var10 = var11;
+          }
+ 
+-         ArrayList var16 = new ArrayList();
++         ArrayList<String> var16 = new ArrayList(); // Luma - Decompile
+          String var18 = !var2 ? fetchRawFile(var14) : fetchRawFile(var15);
+          if (var18.length() != 0) {
+             for (String var22 : var18.split("\n")) {
+@@ -529,7 +529,7 @@ public class HeadDatabaseManager {
+                   var25 = true;
+                }
+ 
+-               ArrayList var26 = new ArrayList();
++               ArrayList<String> var26 = new ArrayList(); // Luma - Decompile
+ 
+                try {
+                   String var27 = var45[5].replace("\"", "").replace("|", ";");
+@@ -1344,7 +1344,7 @@ public class HeadDatabaseManager {
+    }
+ 
+    public void openSubFontInventory(Player var1) {
+-      ArrayList var2 = new ArrayList();
++      ArrayList<String> var2 = new ArrayList();
+       Category var3 = this.getCategory(CategoryEnum.ALPHABET);
+ 
+       for (Head var5 : var3.heads) {
+@@ -1405,9 +1405,9 @@ public class HeadDatabaseManager {
+ 
+       for (String var8 : var2) {
+          Head var9 = null;
+-         ArrayList var10 = new ArrayList<>(var3.heads);
++         ArrayList<Head> var10 = new ArrayList<>(var3.heads); // Luma - Decompile
+ 
+-         for (Head var12 : new ArrayList(var10)) {
++         for (Head var12 : new ArrayList<>(var10)) { // Luma - Decompile
+             if (!var12.tags.contains(var8)) {
+                var10.remove(var12);
+             } else if (var12.name.toLowerCase().endsWith(" a")) {
+@@ -1447,9 +1447,9 @@ public class HeadDatabaseManager {
+    public void openFontInventory(CategoryEnum var1, String var2, int var3, Player var4) {
+       Category var5 = this.getCategory(var1);
+       if (var3 != 0) {
+-         ArrayList var6 = new ArrayList<>(var5.heads);
++         ArrayList<Head> var6 = new ArrayList<>(var5.heads); // Luma - Decompile
+ 
+-         for (Head var8 : new ArrayList(var6)) {
++         for (Head var8 : new ArrayList<>(var6)) { // Luma - Decompile
+             if (var2.equalsIgnoreCase("other")) {
+                for (String var10 : var8.tags) {
+                   if (var10.toLowerCase().contains("font")) {
+@@ -1498,7 +1498,7 @@ public class HeadDatabaseManager {
+                }
+             }
+ 
+-            ArrayList var24 = new ArrayList();
++            ArrayList<Head> var24 = new ArrayList(); // Luma - Decompile
+ 
+             for (int var26 = (var3 - 1) * var20; var26 < var3 * var20; var26++) {
+                try {

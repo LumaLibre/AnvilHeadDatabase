@@ -1,0 +1,66 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/sound/SoundStopImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/sound/SoundStopImpl.java
+deleted file mode 100644
+index 55211bb..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/sound/SoundStopImpl.java
++++ /dev/null
+@@ -1,60 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.sound;
+-
+-import java.util.Objects;
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.adventure.internal.Internals;
+-import me.arcaniax.hdb.libs.kyori.adventure.key.Key;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-abstract class SoundStopImpl implements SoundStop {
+-   static final SoundStop ALL = new SoundStopImpl(null) {
+-      @Nullable
+-      @Override
+-      public Key sound() {
+-         return null;
+-      }
+-   };
+-   private final Sound.@Nullable Source source;
+-
+-   SoundStopImpl(final Sound.@Nullable Source source) {
+-      this.source = sourcex;
+-   }
+-
+-   @Override
+-   public Sound.@Nullable Source source() {
+-      return this.source;
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (this == other) {
+-         return true;
+-      }
+-
+-      if (!(other instanceof SoundStopImpl)) {
+-         return false;
+-      }
+-
+-      SoundStopImpl var2 = (SoundStopImpl)other;
+-      return Objects.equals(this.sound(), var2.sound()) && Objects.equals(this.source, var2.source);
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      int var1 = Objects.hashCode(this.sound());
+-      return 31 * var1 + Objects.hashCode(this.source);
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.of(ExaminableProperty.of("name", this.sound()), ExaminableProperty.of("source", this.source));
+-   }
+-
+-   @Override
+-   public String toString() {
+-      return Internals.toString(this);
+-   }
+-}

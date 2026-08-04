@@ -1,0 +1,14 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/PreProcess.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/PreProcess.java
+deleted file mode 100644
+index 2084577..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/PreProcess.java
++++ /dev/null
+@@ -1,8 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag;
+-
+-import org.jetbrains.annotations.NotNull;
+-
+-public interface PreProcess extends Tag {
+-   @NotNull
+-   String value();
+-}

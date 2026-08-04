@@ -1,0 +1,105 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/MiniMessage.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/MiniMessage.java
+deleted file mode 100644
+index a90fd62..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/MiniMessage.java
++++ /dev/null
+@@ -1,99 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage;
+-
+-import java.util.function.Consumer;
+-import java.util.function.UnaryOperator;
+-import me.arcaniax.hdb.libs.kyori.adventure.builder.AbstractBuilder;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tree.Node;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.serializer.ComponentSerializer;
+-import me.arcaniax.hdb.libs.kyori.adventure.util.PlatformAPI;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-import org.jetbrains.annotations.ApiStatus.Internal;
+-
+-public interface MiniMessage extends ComponentSerializer<Component, Component, String> {
+-   @NotNull
+-   static MiniMessage miniMessage() {
+-      return MiniMessageImpl.Instances.INSTANCE;
+-   }
+-
+-   @NotNull
+-   String escapeTags(@NotNull final String input);
+-
+-   @NotNull
+-   String escapeTags(@NotNull final String input, @NotNull final TagResolver tagResolver);
+-
+-   @NotNull
+-   default String escapeTags(@NotNull final String input, @NotNull final TagResolver... tagResolvers) {
+-      return this.escapeTags(input, TagResolver.resolver(tagResolvers));
+-   }
+-
+-   @NotNull
+-   String stripTags(@NotNull final String input);
+-
+-   @NotNull
+-   String stripTags(@NotNull final String input, @NotNull final TagResolver tagResolver);
+-
+-   @NotNull
+-   default String stripTags(@NotNull final String input, @NotNull final TagResolver... tagResolvers) {
+-      return this.stripTags(input, TagResolver.resolver(tagResolvers));
+-   }
+-
+-   @NotNull
+-   Component deserialize(@NotNull final String input, @NotNull final TagResolver tagResolver);
+-
+-   @NotNull
+-   default Component deserialize(@NotNull final String input, @NotNull final TagResolver... tagResolvers) {
+-      return this.deserialize(input, TagResolver.resolver(tagResolvers));
+-   }
+-
+-   Node.@NotNull Root deserializeToTree(@NotNull final String input);
+-
+-   Node.@NotNull Root deserializeToTree(@NotNull final String input, @NotNull final TagResolver tagResolver);
+-
+-   default Node.@NotNull Root deserializeToTree(@NotNull final String input, @NotNull final TagResolver... tagResolvers) {
+-      return this.deserializeToTree(input, TagResolver.resolver(tagResolvers));
+-   }
+-
+-   static MiniMessage.Builder builder() {
+-      return new MiniMessageImpl.BuilderImpl();
+-   }
+-
+-   interface Builder extends AbstractBuilder<MiniMessage> {
+-      @NotNull
+-      MiniMessage.Builder tags(@NotNull final TagResolver tags);
+-
+-      @NotNull
+-      MiniMessage.Builder editTags(@NotNull final Consumer<TagResolver.Builder> adder);
+-
+-      @NotNull
+-      MiniMessage.Builder strict(final boolean strict);
+-
+-      @NotNull
+-      MiniMessage.Builder debug(@Nullable final Consumer<String> debugOutput);
+-
+-      @NotNull
+-      MiniMessage.Builder postProcessor(@NotNull final UnaryOperator<Component> postProcessor);
+-
+-      @NotNull
+-      MiniMessage.Builder preProcessor(@NotNull final UnaryOperator<String> preProcessor);
+-
+-      @NotNull
+-      MiniMessage build();
+-   }
+-
+-   @PlatformAPI
+-   @Internal
+-   interface Provider {
+-      @PlatformAPI
+-      @Internal
+-      @NotNull
+-      MiniMessage miniMessage();
+-
+-      @PlatformAPI
+-      @Internal
+-      @NotNull
+-      Consumer<MiniMessage.Builder> builder();
+-   }
+-}

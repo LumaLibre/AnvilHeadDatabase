@@ -1,0 +1,135 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/ComponentCompaction.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/ComponentCompaction.java
+deleted file mode 100644
+index bd00ab6..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/ComponentCompaction.java
++++ /dev/null
+@@ -1,129 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-import java.util.ArrayList;
+-import java.util.Collections;
+-import java.util.List;
+-import java.util.Objects;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-import org.jetbrains.annotations.VisibleForTesting;
+-
+-final class ComponentCompaction {
+-   @VisibleForTesting
+-   static final boolean SIMPLIFY_STYLE_FOR_BLANK_COMPONENTS = false;
+-
+-   private ComponentCompaction() {
+-   }
+-
+-   static Component compact(@NotNull final Component self, @Nullable final Style parentStyle) {
+-      List var2 = self.children();
+-      Component var3 = self.children(Collections.emptyList());
+-      if (parentStyle != null) {
+-         var3 = var3.style(self.style().unmerge(parentStyle));
+-      }
+-
+-      int var4 = var2.size();
+-      if (var4 == 0) {
+-         if (isBlank(var3)) {
+-            var3 = var3.style(simplifyStyleForBlank(var3.style(), parentStyle));
+-         }
+-
+-         return var3;
+-      } else {
+-         if (var4 == 1 && var3 instanceof TextComponent) {
+-            TextComponent var5 = (TextComponent)var3;
+-            if (var5.content().isEmpty()) {
+-               Component var14 = (Component)var2.get(0);
+-               return var14.style(var14.style().merge(var3.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET)).compact();
+-            }
+-         }
+-
+-         Style var13 = var3.style();
+-         if (parentStyle != null) {
+-            var13 = var13.merge(parentStyle, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+-         }
+-
+-         ArrayList var6 = new ArrayList(var2.size());
+-
+-         for (int var7 = 0; var7 < var2.size(); var7++) {
+-            Component var8 = (Component)var2.get(var7);
+-            var8 = compact(var8, var13);
+-            if (var8.children().isEmpty() && var8 instanceof TextComponent) {
+-               TextComponent var9 = (TextComponent)var8;
+-               if (var9.content().isEmpty()) {
+-                  continue;
+-               }
+-            }
+-
+-            var6.add(var8);
+-         }
+-
+-         if (var3 instanceof TextComponent) {
+-            while (!var6.isEmpty()) {
+-               Component var15 = (Component)var6.get(0);
+-               Style var18 = var15.style().merge(var13, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+-               if (!(var15 instanceof TextComponent) || !Objects.equals(var18, var13)) {
+-                  break;
+-               }
+-
+-               var3 = joinText((TextComponent)var3, (TextComponent)var15);
+-               var6.remove(0);
+-               var6.addAll(0, var15.children());
+-            }
+-         }
+-
+-         int var16 = 0;
+-
+-         while (var16 + 1 < var6.size()) {
+-            Component var19 = (Component)var6.get(var16);
+-            Component var20 = (Component)var6.get(var16 + 1);
+-            if (var19.children().isEmpty() && var19 instanceof TextComponent && var20 instanceof TextComponent) {
+-               Style var10 = var19.style().merge(var13, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+-               Style var11 = var20.style().merge(var13, Style.Merge.Strategy.IF_ABSENT_ON_TARGET);
+-               if (var10.equals(var11)) {
+-                  TextComponent var12 = joinText((TextComponent)var19, (TextComponent)var20);
+-                  var6.set(var16, var12);
+-                  var6.remove(var16 + 1);
+-                  continue;
+-               }
+-            }
+-
+-            var16++;
+-         }
+-
+-         if (var6.isEmpty() && isBlank(var3)) {
+-            var3 = var3.style(simplifyStyleForBlank(var3.style(), parentStyle));
+-         }
+-
+-         return var3.children(var6);
+-      }
+-   }
+-
+-   private static boolean isBlank(final Component component) {
+-      if (component instanceof TextComponent) {
+-         TextComponent var1 = (TextComponent)component;
+-         String var2 = var1.content();
+-
+-         for (int var3 = 0; var3 < var2.length(); var3++) {
+-            char var4 = var2.charAt(var3);
+-            if (var4 != ' ') {
+-               return false;
+-            }
+-         }
+-
+-         return true;
+-      } else {
+-         return false;
+-      }
+-   }
+-
+-   @NotNull
+-   private static Style simplifyStyleForBlank(@NotNull final Style style, @Nullable final Style parentStyle) {
+-      return style;
+-   }
+-
+-   private static TextComponent joinText(final TextComponent one, final TextComponent two) {
+-      return TextComponentImpl.create(two.children(), one.style(), one.content() + two.content());
+-   }
+-}

@@ -1,0 +1,155 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/translation/TranslationRegistryImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/translation/TranslationRegistryImpl.java
+deleted file mode 100644
+index 8e777e2..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/translation/TranslationRegistryImpl.java
++++ /dev/null
+@@ -1,149 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.translation;
+-
+-import java.text.MessageFormat;
+-import java.util.Locale;
+-import java.util.Map;
+-import java.util.Objects;
+-import java.util.concurrent.ConcurrentHashMap;
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.adventure.internal.Internals;
+-import me.arcaniax.hdb.libs.kyori.adventure.key.Key;
+-import me.arcaniax.hdb.libs.kyori.examination.Examinable;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class TranslationRegistryImpl implements Examinable, TranslationRegistry {
+-   private final Key name;
+-   private final Map<String, TranslationRegistryImpl.Translation> translations = new ConcurrentHashMap<>();
+-   private Locale defaultLocale = Locale.US;
+-
+-   TranslationRegistryImpl(final Key name) {
+-      this.name = namex;
+-   }
+-
+-   @Override
+-   public void register(@NotNull final String key, @NotNull final Locale locale, @NotNull final MessageFormat format) {
+-      this.translations.computeIfAbsent(key, var1 -> new TranslationRegistryImpl.Translation(var1)).register(locale, format);
+-   }
+-
+-   @Override
+-   public void unregister(@NotNull final String key) {
+-      this.translations.remove(key);
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Key name() {
+-      return this.name;
+-   }
+-
+-   @Override
+-   public boolean contains(@NotNull final String key) {
+-      return this.translations.containsKey(key);
+-   }
+-
+-   @Nullable
+-   @Override
+-   public MessageFormat translate(@NotNull final String key, @NotNull final Locale locale) {
+-      TranslationRegistryImpl.Translation var3 = this.translations.get(key);
+-      return var3 == null ? null : var3.translate(locale);
+-   }
+-
+-   @Override
+-   public void defaultLocale(@NotNull final Locale defaultLocale) {
+-      this.defaultLocale = Objects.requireNonNull(defaultLocalex, "defaultLocale");
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.of(ExaminableProperty.of("translations", this.translations));
+-   }
+-
+-   @Override
+-   public boolean equals(final Object other) {
+-      if (this == other) {
+-         return true;
+-      }
+-
+-      if (!(other instanceof TranslationRegistryImpl)) {
+-         return false;
+-      }
+-
+-      TranslationRegistryImpl var2 = (TranslationRegistryImpl)other;
+-      return this.name.equals(var2.name) && this.translations.equals(var2.translations) && this.defaultLocale.equals(var2.defaultLocale);
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      return Objects.hash(this.name, this.translations, this.defaultLocale);
+-   }
+-
+-   @Override
+-   public String toString() {
+-      return Internals.toString(this);
+-   }
+-
+-   final class Translation implements Examinable {
+-      private final String key;
+-      private final Map<Locale, MessageFormat> formats;
+-
+-      Translation(@NotNull final String key) {
+-         this.key = Objects.requireNonNull(keyx, "translation key");
+-         this.formats = new ConcurrentHashMap<>();
+-      }
+-
+-      void register(@NotNull final Locale locale, @NotNull final MessageFormat format) {
+-         if (this.formats.putIfAbsent(Objects.requireNonNull(locale, "locale"), Objects.requireNonNull(format, "message format")) != null) {
+-            throw new IllegalArgumentException(String.format("Translation already exists: %s for %s", this.key, locale));
+-         }
+-      }
+-
+-      @Nullable
+-      MessageFormat translate(@NotNull final Locale locale) {
+-         MessageFormat var2 = this.formats.get(Objects.requireNonNull(locale, "locale"));
+-         if (var2 == null) {
+-            var2 = this.formats.get(new Locale(locale.getLanguage()));
+-            if (var2 == null) {
+-               var2 = this.formats.get(TranslationRegistryImpl.this.defaultLocale);
+-               if (var2 == null) {
+-                  var2 = this.formats.get(TranslationLocales.global());
+-               }
+-            }
+-         }
+-
+-         return var2;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Stream<? extends ExaminableProperty> examinableProperties() {
+-         return Stream.of(ExaminableProperty.of("key", this.key), ExaminableProperty.of("formats", this.formats));
+-      }
+-
+-      @Override
+-      public boolean equals(final Object other) {
+-         if (this == other) {
+-            return true;
+-         }
+-
+-         if (!(other instanceof TranslationRegistryImpl.Translation)) {
+-            return false;
+-         }
+-
+-         TranslationRegistryImpl.Translation var2 = (TranslationRegistryImpl.Translation)other;
+-         return this.key.equals(var2.key) && this.formats.equals(var2.formats);
+-      }
+-
+-      @Override
+-      public int hashCode() {
+-         return Objects.hash(this.key, this.formats);
+-      }
+-
+-      @Override
+-      public String toString() {
+-         return Internals.toString(this);
+-      }
+-   }
+-}

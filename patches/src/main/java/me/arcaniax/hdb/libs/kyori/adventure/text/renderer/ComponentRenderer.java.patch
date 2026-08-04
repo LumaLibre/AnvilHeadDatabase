@@ -1,0 +1,20 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/renderer/ComponentRenderer.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/renderer/ComponentRenderer.java
+deleted file mode 100644
+index a06595b..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/renderer/ComponentRenderer.java
++++ /dev/null
+@@ -1,14 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.renderer;
+-
+-import java.util.function.Function;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import org.jetbrains.annotations.NotNull;
+-
+-public interface ComponentRenderer<C> {
+-   @NotNull
+-   Component render(@NotNull final Component component, @NotNull final C context);
+-
+-   default <T> ComponentRenderer<T> mapContext(final Function<T, C> transformer) {
+-      return (component, ctx) -> this.render(component, transformer.apply(ctx));
+-   }
+-}

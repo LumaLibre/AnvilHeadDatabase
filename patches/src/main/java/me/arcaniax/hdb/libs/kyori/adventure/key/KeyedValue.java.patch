@@ -1,0 +1,28 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/key/KeyedValue.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/key/KeyedValue.java
+deleted file mode 100644
+index 35d6939..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/key/KeyedValue.java
++++ /dev/null
+@@ -1,22 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.key;
+-
+-import java.util.Objects;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval;
+-
+-public interface KeyedValue<T> extends Keyed {
+-   @NotNull
+-   static <T> KeyedValue<T> keyedValue(@NotNull final Key key, @NotNull final T value) {
+-      return new KeyedValueImpl<>(key, Objects.requireNonNull(value, "value"));
+-   }
+-
+-   @Deprecated
+-   @ScheduledForRemoval(inVersion = "5.0.0")
+-   @NotNull
+-   static <T> KeyedValue<T> of(@NotNull final Key key, @NotNull final T value) {
+-      return new KeyedValueImpl<>(key, Objects.requireNonNull(value, "value"));
+-   }
+-
+-   @NotNull
+-   T value();
+-}

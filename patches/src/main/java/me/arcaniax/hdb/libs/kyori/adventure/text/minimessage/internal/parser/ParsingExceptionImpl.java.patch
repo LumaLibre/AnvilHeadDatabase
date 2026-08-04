@@ -1,0 +1,91 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/parser/ParsingExceptionImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/parser/ParsingExceptionImpl.java
+deleted file mode 100644
+index 0ef0f83..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/parser/ParsingExceptionImpl.java
++++ /dev/null
+@@ -1,85 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.parser;
+-
+-import java.util.Arrays;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.ParsingException;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-import org.jetbrains.annotations.ApiStatus.Internal;
+-
+-@Internal
+-public class ParsingExceptionImpl extends ParsingException {
+-   private static final long serialVersionUID = 2507190809441787202L;
+-   private final String originalText;
+-   private Token @NotNull [] tokens;
+-
+-   public ParsingExceptionImpl(final String message, @Nullable final String originalText, @NotNull final Token... tokens) {
+-      super(message, null, true, false);
+-      this.tokens = tokensx;
+-      this.originalText = originalTextx;
+-   }
+-
+-   public ParsingExceptionImpl(
+-      final String message, @Nullable final String originalText, @Nullable final Throwable cause, final boolean withStackTrace, @NotNull final Token... tokens
+-   ) {
+-      super(message, cause, true, withStackTrace);
+-      this.tokens = tokensx;
+-      this.originalText = originalTextx;
+-   }
+-
+-   @Override
+-   public String getMessage() {
+-      String var1 = this.tokens().length != 0 ? "\n\t" + this.arrow() : "";
+-      String var2 = this.originalText() != null ? "\n\t" + this.originalText() + var1 : "";
+-      return super.getMessage() + var2;
+-   }
+-
+-   @Nullable
+-   @Override
+-   public String detailMessage() {
+-      return super.getMessage();
+-   }
+-
+-   @Nullable
+-   @Override
+-   public String originalText() {
+-      return this.originalText;
+-   }
+-
+-   @NotNull
+-   public Token[] tokens() {
+-      return this.tokens;
+-   }
+-
+-   public void tokens(@NotNull final Token[] tokens) {
+-      this.tokens = tokensx;
+-   }
+-
+-   private String arrow() {
+-      Token[] var1 = this.tokens();
+-      char[] var2 = new char[var1[var1.length - 1].endIndex()];
+-      int var3 = 0;
+-
+-      for (Token var7 : var1) {
+-         Arrays.fill(var2, var3, var7.startIndex(), ' ');
+-         var2[var7.startIndex()] = '^';
+-         if (Math.abs(var7.startIndex() - var7.endIndex()) > 1) {
+-            Arrays.fill(var2, var7.startIndex() + 1, var7.endIndex() - 1, '~');
+-         }
+-
+-         var2[var7.endIndex() - 1] = '^';
+-         var3 = var7.endIndex();
+-      }
+-
+-      return new String(var2);
+-   }
+-
+-   @Override
+-   public int startIndex() {
+-      return this.tokens.length == 0 ? -1 : this.tokens[0].startIndex();
+-   }
+-
+-   @Override
+-   public int endIndex() {
+-      return this.tokens.length == 0 ? -1 : this.tokens[this.tokens.length - 1].endIndex();
+-   }
+-}

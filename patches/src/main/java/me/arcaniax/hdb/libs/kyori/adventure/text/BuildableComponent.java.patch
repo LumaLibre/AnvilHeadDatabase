@@ -1,0 +1,15 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/BuildableComponent.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/BuildableComponent.java
+deleted file mode 100644
+index 2b5de53..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/BuildableComponent.java
++++ /dev/null
+@@ -1,9 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.util.Buildable;
+-import org.jetbrains.annotations.NotNull;
+-
+-public interface BuildableComponent<C extends BuildableComponent<C, B>, B extends ComponentBuilder<C, B>> extends Buildable<C, B>, Component {
+-   @NotNull
+-   B toBuilder();
+-}

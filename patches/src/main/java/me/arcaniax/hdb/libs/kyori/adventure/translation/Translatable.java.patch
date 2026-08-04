@@ -1,0 +1,14 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/translation/Translatable.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/translation/Translatable.java
+deleted file mode 100644
+index cdcf431..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/translation/Translatable.java
++++ /dev/null
+@@ -1,8 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.translation;
+-
+-import org.jetbrains.annotations.NotNull;
+-
+-public interface Translatable {
+-   @NotNull
+-   String translationKey();
+-}

@@ -1,0 +1,14 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/Adventure.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/Adventure.java
+deleted file mode 100644
+index d409e26..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/Adventure.java
++++ /dev/null
+@@ -1,8 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure;
+-
+-public final class Adventure {
+-   public static final String NAMESPACE = "adventure";
+-
+-   private Adventure() {
+-   }
+-}

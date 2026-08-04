@@ -1,0 +1,156 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/title/TitleImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/title/TitleImpl.java
+deleted file mode 100644
+index 2049f5f..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/title/TitleImpl.java
++++ /dev/null
+@@ -1,150 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.title;
+-
+-import java.time.Duration;
+-import java.util.Objects;
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.adventure.internal.Internals;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-import org.jetbrains.annotations.UnknownNullability;
+-
+-final class TitleImpl implements Title {
+-   private final Component title;
+-   private final Component subtitle;
+-   @Nullable
+-   private final Title.Times times;
+-
+-   TitleImpl(@NotNull final Component title, @NotNull final Component subtitle, @Nullable final Title.Times times) {
+-      this.title = Objects.requireNonNull(titlex, "title");
+-      this.subtitle = Objects.requireNonNull(subtitlex, "subtitle");
+-      this.times = timesx;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Component title() {
+-      return this.title;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Component subtitle() {
+-      return this.subtitle;
+-   }
+-
+-   @Nullable
+-   @Override
+-   public Title.Times times() {
+-      return this.times;
+-   }
+-
+-   @Override
+-   public <T> @UnknownNullability T part(@NotNull final TitlePart<T> part) {
+-      Objects.requireNonNull(part, "part");
+-      if (part == TitlePart.TITLE) {
+-         return (T)this.title;
+-      } else if (part == TitlePart.SUBTITLE) {
+-         return (T)this.subtitle;
+-      } else if (part == TitlePart.TIMES) {
+-         return (T)this.times;
+-      } else {
+-         throw new IllegalArgumentException("Don't know what " + part + " is.");
+-      }
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (this == other) {
+-         return true;
+-      } else if (other != null && this.getClass() == other.getClass()) {
+-         TitleImpl var2 = (TitleImpl)other;
+-         return this.title.equals(var2.title) && this.subtitle.equals(var2.subtitle) && Objects.equals(this.times, var2.times);
+-      } else {
+-         return false;
+-      }
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      int var1 = this.title.hashCode();
+-      var1 = 31 * var1 + this.subtitle.hashCode();
+-      return 31 * var1 + Objects.hashCode(this.times);
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.of(ExaminableProperty.of("title", this.title), ExaminableProperty.of("subtitle", this.subtitle), ExaminableProperty.of("times", this.times));
+-   }
+-
+-   @Override
+-   public String toString() {
+-      return Internals.toString(this);
+-   }
+-
+-   static class TimesImpl implements Title.Times {
+-      private final Duration fadeIn;
+-      private final Duration stay;
+-      private final Duration fadeOut;
+-
+-      TimesImpl(@NotNull final Duration fadeIn, @NotNull final Duration stay, @NotNull final Duration fadeOut) {
+-         this.fadeIn = Objects.requireNonNull(fadeInx, "fadeIn");
+-         this.stay = Objects.requireNonNull(stayx, "stay");
+-         this.fadeOut = Objects.requireNonNull(fadeOutx, "fadeOut");
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Duration fadeIn() {
+-         return this.fadeIn;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Duration stay() {
+-         return this.stay;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Duration fadeOut() {
+-         return this.fadeOut;
+-      }
+-
+-      @Override
+-      public boolean equals(@Nullable final Object other) {
+-         if (this == other) {
+-            return true;
+-         }
+-
+-         if (!(other instanceof TitleImpl.TimesImpl)) {
+-            return false;
+-         }
+-
+-         TitleImpl.TimesImpl var2 = (TitleImpl.TimesImpl)other;
+-         return this.fadeIn.equals(var2.fadeIn) && this.stay.equals(var2.stay) && this.fadeOut.equals(var2.fadeOut);
+-      }
+-
+-      @Override
+-      public int hashCode() {
+-         int var1 = this.fadeIn.hashCode();
+-         var1 = 31 * var1 + this.stay.hashCode();
+-         return 31 * var1 + this.fadeOut.hashCode();
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Stream<? extends ExaminableProperty> examinableProperties() {
+-         return Stream.of(
+-            ExaminableProperty.of("fadeIn", this.fadeIn), ExaminableProperty.of("stay", this.stay), ExaminableProperty.of("fadeOut", this.fadeOut)
+-         );
+-      }
+-
+-      @Override
+-      public String toString() {
+-         return Internals.toString(this);
+-      }
+-   }
+-}

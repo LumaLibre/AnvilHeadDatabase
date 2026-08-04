@@ -1,0 +1,29 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/builder/AbstractBuilder.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/builder/AbstractBuilder.java
+deleted file mode 100644
+index 745c887..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/builder/AbstractBuilder.java
++++ /dev/null
+@@ -1,23 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.builder;
+-
+-import java.util.function.Consumer;
+-import org.jetbrains.annotations.Contract;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-@FunctionalInterface
+-public interface AbstractBuilder<R> {
+-   @Contract(mutates = "param1")
+-   @NotNull
+-   static <R, B extends AbstractBuilder<R>> R configureAndBuild(@NotNull final B builder, @Nullable final Consumer<? super B> consumer) {
+-      if (consumer != null) {
+-         consumer.accept(builder);
+-      }
+-
+-      return builder.build();
+-   }
+-
+-   @Contract(value = "-> new", pure = true)
+-   @NotNull
+-   R build();
+-}

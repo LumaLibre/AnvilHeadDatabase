@@ -1,0 +1,34 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/translation/TranslationLocales.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/translation/TranslationLocales.java
+deleted file mode 100644
+index 706b1e6..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/translation/TranslationLocales.java
++++ /dev/null
+@@ -1,28 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.translation;
+-
+-import java.util.Locale;
+-import java.util.function.Supplier;
+-import me.arcaniax.hdb.libs.kyori.adventure.internal.properties.AdventureProperties;
+-
+-final class TranslationLocales {
+-   private static final Supplier<Locale> GLOBAL;
+-
+-   private TranslationLocales() {
+-   }
+-
+-   static Locale global() {
+-      return GLOBAL.get();
+-   }
+-
+-   static {
+-      String var0 = AdventureProperties.DEFAULT_TRANSLATION_LOCALE.value();
+-      if (var0 == null || var0.isEmpty()) {
+-         GLOBAL = () -> Locale.US;
+-      } else if (var0.equals("system")) {
+-         GLOBAL = Locale::getDefault;
+-      } else {
+-         Locale var1 = Translator.parseLocale(var0);
+-         GLOBAL = () -> var1;
+-      }
+-   }
+-}

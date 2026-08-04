@@ -1,0 +1,190 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/TextReplacementRenderer.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/TextReplacementRenderer.java
+deleted file mode 100644
+index 3739d4b..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/TextReplacementRenderer.java
++++ /dev/null
+@@ -1,184 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-import java.util.ArrayList;
+-import java.util.List;
+-import java.util.function.BiFunction;
+-import java.util.regex.MatchResult;
+-import java.util.regex.Matcher;
+-import java.util.regex.Pattern;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.event.HoverEvent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.renderer.ComponentRenderer;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class TextReplacementRenderer implements ComponentRenderer<TextReplacementRenderer.State> {
+-   static final TextReplacementRenderer INSTANCE = new TextReplacementRenderer();
+-
+-   private TextReplacementRenderer() {
+-   }
+-
+-   @NotNull
+-   public Component render(@NotNull final Component component, @NotNull final TextReplacementRenderer.State state) {
+-      if (!state.running) {
+-         return component;
+-      }
+-
+-      boolean var3 = state.firstMatch;
+-      state.firstMatch = true;
+-      List var4 = component.children();
+-      int var5 = var4.size();
+-      Style var6 = component.style();
+-      ArrayList var7 = null;
+-      Component var8 = component;
+-      if (component instanceof TextComponent) {
+-         String var9 = ((TextComponent)component).content();
+-         Matcher var10 = state.pattern.matcher(var9);
+-         int var11 = 0;
+-
+-         while (var10.find()) {
+-            PatternReplacementResult var12 = state.continuer.shouldReplace(var10, ++state.matchCount, state.replaceCount);
+-            if (var12 != PatternReplacementResult.CONTINUE) {
+-               if (var12 == PatternReplacementResult.STOP) {
+-                  state.running = false;
+-                  break;
+-               }
+-
+-               if (var10.start() == 0) {
+-                  if (var10.end() == var9.length()) {
+-                     ComponentLike var13 = state.replacement.apply(var10, Component.text().content(var10.group()).style(component.style()));
+-                     var8 = var13 == null ? Component.empty() : var13.asComponent();
+-                     if (var8.style().hoverEvent() != null) {
+-                        var6 = var6.hoverEvent(null);
+-                     }
+-
+-                     var8 = var8.style(var8.style().merge(component.style(), Style.Merge.Strategy.IF_ABSENT_ON_TARGET));
+-                     if (var7 == null) {
+-                        var7 = new ArrayList(var5 + var8.children().size());
+-                        var7.addAll(var8.children());
+-                     }
+-                  } else {
+-                     var8 = Component.text("", component.style());
+-                     ComponentLike var25 = state.replacement.apply(var10, Component.text().content(var10.group()));
+-                     if (var25 != null) {
+-                        if (var7 == null) {
+-                           var7 = new ArrayList(var5 + 1);
+-                        }
+-
+-                        var7.add(var25.asComponent());
+-                     }
+-                  }
+-               } else {
+-                  if (var7 == null) {
+-                     var7 = new ArrayList(var5 + 2);
+-                  }
+-
+-                  if (state.firstMatch) {
+-                     var8 = ((TextComponent)component).content(var9.substring(0, var10.start()));
+-                  } else if (var11 < var10.start()) {
+-                     var7.add(Component.text(var9.substring(var11, var10.start())));
+-                  }
+-
+-                  ComponentLike var26 = state.replacement.apply(var10, Component.text().content(var10.group()));
+-                  if (var26 != null) {
+-                     var7.add(var26.asComponent());
+-                  }
+-               }
+-
+-               state.replaceCount++;
+-               state.firstMatch = false;
+-               var11 = var10.end();
+-            }
+-         }
+-
+-         if (var11 < var9.length() && var11 > 0) {
+-            if (var7 == null) {
+-               var7 = new ArrayList(var5);
+-            }
+-
+-            var7.add(Component.text(var9.substring(var11)));
+-         }
+-      } else if (var8 instanceof TranslatableComponent) {
+-         List var16 = ((TranslatableComponent)var8).args();
+-         ArrayList var18 = null;
+-         int var21 = 0;
+-
+-         for (int var23 = var16.size(); var21 < var23; var21++) {
+-            Component var27 = (Component)var16.get(var21);
+-            Component var14 = this.render(var27, state);
+-            if (var14 != component && var18 == null) {
+-               var18 = new ArrayList(var23);
+-               if (var21 > 0) {
+-                  var18.addAll(var16.subList(0, var21));
+-               }
+-            }
+-
+-            if (var18 != null) {
+-               var18.add(var14);
+-            }
+-         }
+-
+-         if (var18 != null) {
+-            var8 = ((TranslatableComponent)var8).args(var18);
+-         }
+-      }
+-
+-      if (state.running) {
+-         HoverEvent var17 = var6.hoverEvent();
+-         if (var17 != null) {
+-            HoverEvent var19 = var17.withRenderedValue(this, state);
+-            if (var17 != var19) {
+-               var8 = var8.style(var1 -> var1.hoverEvent(var19));
+-            }
+-         }
+-
+-         boolean var20 = true;
+-
+-         for (int var22 = 0; var22 < var5; var22++) {
+-            Component var24 = (Component)var4.get(var22);
+-            Component var28 = this.render(var24, state);
+-            if (var28 != var24) {
+-               if (var7 == null) {
+-                  var7 = new ArrayList(var5);
+-               }
+-
+-               if (var20) {
+-                  var7.addAll(var4.subList(0, var22));
+-               }
+-
+-               var20 = false;
+-            }
+-
+-            if (var7 != null) {
+-               var7.add(var28);
+-               var20 = false;
+-            }
+-         }
+-      } else if (var7 != null) {
+-         var7.addAll(var4);
+-      }
+-
+-      state.firstMatch = var3;
+-      return var7 != null ? var8.children(var7) : var8;
+-   }
+-
+-   static final class State {
+-      final Pattern pattern;
+-      final BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement;
+-      final TextReplacementConfig.Condition continuer;
+-      boolean running = true;
+-      int matchCount = 0;
+-      int replaceCount = 0;
+-      boolean firstMatch = true;
+-
+-      State(
+-         @NotNull final Pattern pattern,
+-         @NotNull final BiFunction<MatchResult, TextComponent.Builder, @Nullable ComponentLike> replacement,
+-         final TextReplacementConfig.@NotNull Condition continuer
+-      ) {
+-         this.pattern = patternx;
+-         this.replacement = replacementx;
+-         this.continuer = continuerx;
+-      }
+-   }
+-}

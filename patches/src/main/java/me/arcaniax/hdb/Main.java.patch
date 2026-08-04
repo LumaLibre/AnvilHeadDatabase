@@ -1,0 +1,28 @@
+diff --git a/src/main/java/me/arcaniax/hdb/Main.java b/src/main/java/me/arcaniax/hdb/Main.java
+index 18e73f9..3f4a31b 100644
+--- a/src/main/java/me/arcaniax/hdb/Main.java
++++ b/src/main/java/me/arcaniax/hdb/Main.java
+@@ -18,9 +18,11 @@ import me.arcaniax.hdb.listener.InventoryListener;
+ import me.arcaniax.hdb.listener.ItemPickupListener;
+ import me.arcaniax.hdb.listener.NexoItemListener;
+ import me.arcaniax.hdb.listener.PlayerClickHeadListener;
+-import me.arcaniax.hdb.metrics.bukkit.Metrics;
+-import me.arcaniax.hdb.metrics.charts.SimplePie;
+-import me.arcaniax.hdb.metrics.charts.SingleLineChart;
++// Luma start - Decompile
++import org.bstats.bukkit.Metrics;
++import org.bstats.charts.SimplePie;
++import org.bstats.charts.SingleLineChart;
++// Luma end - Decompile
+ import me.arcaniax.hdb.object.HeadConverter;
+ import me.arcaniax.hdb.object.Settings;
+ import me.arcaniax.hdb.object.head.Head;
+@@ -52,7 +54,7 @@ public class Main extends JavaPlugin {
+    public List<String> registerGeyser;
+ 
+    public void onEnable() {
+-      loadConfig0();
++      /*loadConfig0();*/ // Luma - Decompile
+       main = this;
+       main.saveDefaultConfig();
+       settings = new Settings();

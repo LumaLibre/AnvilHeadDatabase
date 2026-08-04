@@ -1,0 +1,147 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/ContextImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/ContextImpl.java
+deleted file mode 100644
+index a723fe0..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/ContextImpl.java
++++ /dev/null
+@@ -1,141 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage;
+-
+-import java.util.List;
+-import java.util.Objects;
+-import java.util.function.Consumer;
+-import java.util.function.UnaryOperator;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.parser.ParsingExceptionImpl;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.parser.Token;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.parser.node.TagPart;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-class ContextImpl implements Context {
+-   private static final Token[] EMPTY_TOKEN_ARRAY = new Token[0];
+-   private final boolean strict;
+-   private final Consumer<String> debugOutput;
+-   private String message;
+-   private final MiniMessage miniMessage;
+-   private final TagResolver tagResolver;
+-   private final UnaryOperator<String> preProcessor;
+-   private final UnaryOperator<Component> postProcessor;
+-
+-   ContextImpl(
+-      final boolean strict,
+-      final Consumer<String> debugOutput,
+-      final String message,
+-      final MiniMessage miniMessage,
+-      @NotNull final TagResolver extraTags,
+-      final UnaryOperator<String> preProcessor,
+-      final UnaryOperator<Component> postProcessor
+-   ) {
+-      this.strict = strictx;
+-      this.debugOutput = debugOutputx;
+-      this.message = messagex;
+-      this.miniMessage = miniMessagex;
+-      this.tagResolver = extraTags;
+-      this.preProcessor = preProcessorx == null ? UnaryOperator.identity() : preProcessorx;
+-      this.postProcessor = postProcessorx == null ? UnaryOperator.identity() : postProcessorx;
+-   }
+-
+-   static ContextImpl of(
+-      final boolean strict,
+-      final Consumer<String> debugOutput,
+-      final String input,
+-      final MiniMessageImpl miniMessage,
+-      final TagResolver extraTags,
+-      final UnaryOperator<String> preProcessor,
+-      final UnaryOperator<Component> postProcessor
+-   ) {
+-      return new ContextImpl(strictx, debugOutputx, input, miniMessagex, extraTags, preProcessorx, postProcessorx);
+-   }
+-
+-   public boolean strict() {
+-      return this.strict;
+-   }
+-
+-   public Consumer<String> debugOutput() {
+-      return this.debugOutput;
+-   }
+-
+-   @NotNull
+-   public String message() {
+-      return this.message;
+-   }
+-
+-   void message(@NotNull final String message) {
+-      this.message = messagex;
+-   }
+-
+-   @NotNull
+-   public TagResolver extraTags() {
+-      return this.tagResolver;
+-   }
+-
+-   public UnaryOperator<Component> postProcessor() {
+-      return this.postProcessor;
+-   }
+-
+-   public UnaryOperator<String> preProcessor() {
+-      return this.preProcessor;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Component deserialize(@NotNull final String message) {
+-      return this.miniMessage.deserialize(Objects.requireNonNull(messagex, "message"), this.tagResolver);
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Component deserialize(@NotNull final String message, @NotNull final TagResolver resolver) {
+-      return this.miniMessage
+-         .deserialize(
+-            Objects.requireNonNull(messagex, "message"),
+-            TagResolver.builder().resolver(this.tagResolver).resolver(Objects.requireNonNull(resolver, "resolver")).build()
+-         );
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Component deserialize(@NotNull final String message, @NotNull final TagResolver... resolvers) {
+-      return this.miniMessage
+-         .deserialize(
+-            Objects.requireNonNull(messagex, "message"),
+-            TagResolver.builder().resolver(this.tagResolver).resolvers(Objects.requireNonNull(resolvers, "resolvers")).build()
+-         );
+-   }
+-
+-   @NotNull
+-   @Override
+-   public ParsingException newException(@NotNull final String message) {
+-      return new ParsingExceptionImpl(messagex, this.message, null, false, EMPTY_TOKEN_ARRAY);
+-   }
+-
+-   @NotNull
+-   @Override
+-   public ParsingException newException(@NotNull final String message, @NotNull final ArgumentQueue tags) {
+-      return new ParsingExceptionImpl(messagex, this.message, null, false, tagsToTokens(((ArgumentQueueImpl)tags).args));
+-   }
+-
+-   @NotNull
+-   @Override
+-   public ParsingException newException(@NotNull final String message, @Nullable final Throwable cause, @NotNull final ArgumentQueue tags) {
+-      return new ParsingExceptionImpl(messagex, this.message, cause, false, tagsToTokens(((ArgumentQueueImpl)tags).args));
+-   }
+-
+-   private static Token[] tagsToTokens(final List<? extends Tag.Argument> tags) {
+-      Token[] var1 = new Token[tags.size()];
+-      int var2 = 0;
+-
+-      for (int var3 = var1.length; var2 < var3; var2++) {
+-         var1[var2] = ((TagPart)tags.get(var2)).token();
+-      }
+-
+-      return var1;
+-   }
+-}

@@ -1,0 +1,18 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/ResetTag.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/ResetTag.java
+deleted file mode 100644
+index 2e6c8f3..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/ResetTag.java
++++ /dev/null
+@@ -1,12 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.standard;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.ParserDirective;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-
+-final class ResetTag {
+-   private static final String RESET = "reset";
+-   static final TagResolver RESOLVER = TagResolver.resolver("reset", ParserDirective.RESET);
+-
+-   private ResetTag() {
+-   }
+-}

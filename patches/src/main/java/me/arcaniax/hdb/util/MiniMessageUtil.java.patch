@@ -1,0 +1,16 @@
+diff --git a/src/main/java/me/arcaniax/hdb/util/MiniMessageUtil.java b/src/main/java/me/arcaniax/hdb/util/MiniMessageUtil.java
+index 00ab3b4..e2e0ac1 100644
+--- a/src/main/java/me/arcaniax/hdb/util/MiniMessageUtil.java
++++ b/src/main/java/me/arcaniax/hdb/util/MiniMessageUtil.java
+@@ -1,7 +1,8 @@
+ package me.arcaniax.hdb.util;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.MiniMessage;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
++// Luma start - Decompile
++import net.kyori.adventure.text.minimessage.MiniMessage;
++import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
++// Luma end - Decompile
+ import net.md_5.bungee.api.ChatColor;
+ 
+ public final class MiniMessageUtil {

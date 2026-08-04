@@ -1,0 +1,53 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/FontTag.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/FontTag.java
+deleted file mode 100644
+index 370ce4f..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/FontTag.java
++++ /dev/null
+@@ -1,47 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.standard;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.key.InvalidKeyException;
+-import me.arcaniax.hdb.libs.kyori.adventure.key.Key;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.Context;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.StyleClaim;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-
+-final class FontTag {
+-   static final String FONT = "font";
+-   static final TagResolver RESOLVER = SerializableResolver.claimingStyle("font", FontTag::create, StyleClaim.claim("font", Style::font, FontTag::emit));
+-
+-   private FontTag() {
+-   }
+-
+-   static Tag create(final ArgumentQueue args, final Context ctx) {
+-      String var3 = args.popOr("A font tag must have either arguments of either <value> or <namespace:value>").value();
+-
+-      Key var2;
+-      try {
+-         if (!args.hasNext()) {
+-            var2 = Key.key(var3);
+-         } else {
+-            String var4 = args.pop().value();
+-            var2 = Key.key(var3, var4);
+-         }
+-      } catch (InvalidKeyException var5) {
+-         throw ctx.newException(var5.getMessage(), args);
+-      }
+-
+-      return Tag.styling(var1 -> var1.font(var2));
+-   }
+-
+-   static void emit(final Key font, final TokenEmitter emitter) {
+-      emitter.tag("font");
+-      if (font.namespace().equals("minecraft")) {
+-         emitter.argument(font.value());
+-      } else {
+-         emitter.arguments(font.namespace(), font.value());
+-      }
+-   }
+-}

@@ -1,0 +1,25 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/parser/node/RootNode.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/parser/node/RootNode.java
+deleted file mode 100644
+index e3d972b..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/parser/node/RootNode.java
++++ /dev/null
+@@ -1,19 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.parser.node;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tree.Node;
+-import org.jetbrains.annotations.NotNull;
+-
+-public final class RootNode extends ElementNode implements Node.Root {
+-   private final String beforePreprocessing;
+-
+-   public RootNode(@NotNull final String sourceMessage, @NotNull final String beforePreprocessing) {
+-      super(null, null, sourceMessage);
+-      this.beforePreprocessing = beforePreprocessingx;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public String input() {
+-      return this.beforePreprocessing;
+-   }
+-}

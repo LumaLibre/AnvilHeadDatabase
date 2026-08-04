@@ -1,0 +1,26 @@
+diff --git a/src/main/java/me/arcaniax/hdb/util/SchedulerUtil.java b/src/main/java/me/arcaniax/hdb/util/SchedulerUtil.java
+index abcda72..51bab6f 100644
+--- a/src/main/java/me/arcaniax/hdb/util/SchedulerUtil.java
++++ b/src/main/java/me/arcaniax/hdb/util/SchedulerUtil.java
+@@ -131,12 +131,17 @@ public class SchedulerUtil {
+    }
+ 
+    public static void runTaskForPlayer(Plugin var0, Player var1, Runnable var2) {
++      // Luma start - Fix Folia Support
+       try {
+-         Object var3 = callMethod(var1, "getScheduler");
+-         callMethod(var3, "run", new Class[]{Plugin.class, Consumer.class, Runnable.class}, var0, (Consumer<Object>)var1x -> var2.run(), (Runnable)() -> {});
+-      } catch (Throwable var4) {
+-         Bukkit.getScheduler().runTask(var0, var2);
++         Method var3 = var1.getClass().getMethod("getScheduler");
++         Object var4 = var3.invoke(var1);
++         var3.getReturnType()
++            .getMethod("run", Plugin.class, Consumer.class, Runnable.class)
++            .invoke(var4, var0, (Consumer<Object>)var1x -> var2.run(), (Runnable)() -> {});
++      } catch (Throwable var5) {
++         runTask(var0, var2);
+       }
++      // Luma end - Fix Folia Support
+    }
+ 
+    public static void cancelTasks(Plugin var0) {

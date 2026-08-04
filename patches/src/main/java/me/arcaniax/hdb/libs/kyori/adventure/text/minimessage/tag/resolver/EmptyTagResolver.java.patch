@@ -1,0 +1,43 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/EmptyTagResolver.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/EmptyTagResolver.java
+deleted file mode 100644
+index 5ea1b9c..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/EmptyTagResolver.java
++++ /dev/null
+@@ -1,37 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver;
+-
+-import java.util.Map;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.Context;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class EmptyTagResolver implements TagResolver, MappableResolver, SerializableResolver {
+-   static final EmptyTagResolver INSTANCE = new EmptyTagResolver();
+-
+-   private EmptyTagResolver() {
+-   }
+-
+-   @Nullable
+-   @Override
+-   public Tag resolve(@NotNull final String name, @NotNull final ArgumentQueue arguments, @NotNull final Context ctx) {
+-      return null;
+-   }
+-
+-   @Override
+-   public boolean has(@NotNull final String name) {
+-      return false;
+-   }
+-
+-   @Override
+-   public boolean contributeToMap(@NotNull final Map<String, Tag> map) {
+-      return true;
+-   }
+-
+-   @Override
+-   public void handle(@NotNull final Component serializable, @NotNull final ClaimConsumer consumer) {
+-   }
+-}

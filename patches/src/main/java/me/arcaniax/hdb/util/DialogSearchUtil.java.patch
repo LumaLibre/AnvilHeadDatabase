@@ -1,0 +1,109 @@
+diff --git a/src/main/java/me/arcaniax/hdb/util/DialogSearchUtil.java b/src/main/java/me/arcaniax/hdb/util/DialogSearchUtil.java
+index e77f721..f0dfb8c 100644
+--- a/src/main/java/me/arcaniax/hdb/util/DialogSearchUtil.java
++++ b/src/main/java/me/arcaniax/hdb/util/DialogSearchUtil.java
+@@ -1,5 +1,6 @@
+ package me.arcaniax.hdb.util;
+ 
++import java.lang.reflect.InvocationTargetException;
+ import java.lang.reflect.Method;
+ import java.lang.reflect.Proxy;
+ import java.util.ArrayList;
+@@ -68,7 +69,7 @@ public final class DialogSearchUtil {
+       }
+    }
+ 
+-   private static Object createSearchAction(Player var0) {
++   private static Object createSearchAction(Player var0) throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException { // Luma - Decompile: throws clause
+       Class var1 = Class.forName("io.papermc.paper.registry.data.dialog.action.DialogActionCallback");
+       Object var2 = Proxy.newProxyInstance(var1.getClassLoader(), new Class[]{var1}, (var1x, var2x, var3x) -> {
+          if ("accept".equals(var2x.getName()) && var3x != null && var3x.length >= 1) {
+@@ -115,7 +116,7 @@ public final class DialogSearchUtil {
+       }
+    }
+ 
+-   private static Object createClickCallbackOptions() {
++   private static Object createClickCallbackOptions() throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException { // Luma - Decompile: throws clause
+       Class var0 = Class.forName(serverKyoriPackage() + "text.event.ClickCallback$Options");
+       Object var1 = callStatic(var0.getName(), "builder", new Class[0]);
+       call(var1, "uses", new Class[]{int.class}, 1);
+@@ -126,7 +127,7 @@ public final class DialogSearchUtil {
+       return var0.replace('\n', ' ').replace('\r', ' ').trim();
+    }
+ 
+-   private static Object createTextInput() {
++   private static Object createTextInput() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException { // Luma - Decompile: throws clause
+       Object var0 = callStatic(
+          "io.papermc.paper.registry.data.dialog.input.DialogInput",
+          "text",
+@@ -140,7 +141,7 @@ public final class DialogSearchUtil {
+       return call(var0, "build", new Class[0]);
+    }
+ 
+-   private static Object createCategoryInput() {
++   private static Object createCategoryInput() throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException { // Luma - Decompile: throws clause
+       Class var0 = Class.forName("io.papermc.paper.registry.data.dialog.input.SingleOptionDialogInput$OptionEntry");
+       ArrayList var1 = new ArrayList();
+       var1.add(
+@@ -183,7 +184,7 @@ public final class DialogSearchUtil {
+       return call(var4, "build", new Class[0]);
+    }
+ 
+-   private static Object createTagsOnlyInput() {
++   private static Object createTagsOnlyInput() throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException { // Luma - Decompile: throws clause
+       return callStatic(
+          "io.papermc.paper.registry.data.dialog.input.DialogInput",
+          "bool",
+@@ -196,7 +197,7 @@ public final class DialogSearchUtil {
+       );
+    }
+ 
+-   private static Object createBase(List<Object> var0, boolean var1) {
++   private static Object createBase(List<Object> var0, boolean var1) throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException { // Luma - Decompile: throws clause
+       Object var2 = callStatic(
+          "io.papermc.paper.registry.data.dialog.DialogBase",
+          "builder",
+@@ -213,7 +214,7 @@ public final class DialogSearchUtil {
+       return call(var2, "build", new Class[0]);
+    }
+ 
+-   private static Object errorBody() {
++   private static Object errorBody() throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException { // Luma - Decompile: throws clause
+       return callStatic(
+          "io.papermc.paper.registry.data.dialog.body.DialogBody",
+          "plainMessage",
+@@ -222,7 +223,7 @@ public final class DialogSearchUtil {
+       );
+    }
+ 
+-   private static Object createDialog(Object var0, Object var1) {
++   private static Object createDialog(Object var0, Object var1) throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException { // Luma - Decompile: throws clause
+       Consumer var2 = var2x -> {
+          try {
+             Object var3 = call(var2x, "empty", new Class[0]);
+@@ -235,7 +236,7 @@ public final class DialogSearchUtil {
+       return callStatic("io.papermc.paper.dialog.Dialog", "create", new Class[]{Consumer.class}, var2);
+    }
+ 
+-   private static Object component(String var0) {
++   private static Object component(String var0) throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+       return callStatic(componentClassName(), "text", new Class[]{String.class}, var0);
+    }
+ 
+@@ -273,14 +274,14 @@ public final class DialogSearchUtil {
+       return String.join("", "net.", "kyori.adventure.");
+    }
+ 
+-   private static Object callStatic(String var0, String var1, Class<?>[] var2, Object... var3) {
++   private static Object callStatic(String var0, String var1, Class<?>[] var2, Object... var3) throws ClassNotFoundException, InvocationTargetException, IllegalAccessException, NoSuchMethodException { // Luma - Decompile: throws clause
+       Class var4 = Class.forName(var0);
+       Method var5 = var4.getMethod(var1, var2);
+       var5.setAccessible(true);
+       return var5.invoke(null, var3);
+    }
+ 
+-   private static Object call(Object var0, String var1, Class<?>[] var2, Object... var3) {
++   private static Object call(Object var0, String var1, Class<?>[] var2, Object... var3) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException { // Luma - Decompile: throws clause
+       Method var4 = var0.getClass().getMethod(var1, var2);
+       var4.setAccessible(true);
+       return var4.invoke(var0, var3);

@@ -1,0 +1,341 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/MiniMessageSerializer.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/MiniMessageSerializer.java
+deleted file mode 100644
+index 0ef7983..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/MiniMessageSerializer.java
++++ /dev/null
+@@ -1,335 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage;
+-
+-import java.util.Arrays;
+-import java.util.HashSet;
+-import java.util.Iterator;
+-import java.util.Objects;
+-import java.util.Set;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.TextComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.Emitable;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.QuotingOverride;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class MiniMessageSerializer {
+-   private MiniMessageSerializer() {
+-   }
+-
+-   @NotNull
+-   static String serialize(@NotNull final Component component, @NotNull final SerializableResolver resolver, final boolean strict) {
+-      StringBuilder var3 = new StringBuilder();
+-      MiniMessageSerializer.Collector var4 = new MiniMessageSerializer.Collector(resolver, strict, var3);
+-      var4.mark();
+-      visit(component, var4, resolver, true);
+-      if (strict) {
+-         var4.popAll();
+-      } else {
+-         var4.completeTag();
+-      }
+-
+-      return var3.toString();
+-   }
+-
+-   private static void visit(
+-      @NotNull final Component component, final MiniMessageSerializer.Collector emitter, final SerializableResolver resolver, final boolean lastChild
+-   ) {
+-      resolver.handle(component, emitter);
+-      emitter.flushClaims(component);
+-      Iterator var4 = component.children().iterator();
+-
+-      while (var4.hasNext()) {
+-         emitter.mark();
+-         visit((Component)var4.next(), emitter, resolver, lastChild && !var4.hasNext());
+-      }
+-
+-      if (!lastChild) {
+-         emitter.popToMark();
+-      }
+-   }
+-
+-   static final class Collector implements TokenEmitter, ClaimConsumer {
+-      private static final String MARK = "__<'\"\\MARK__";
+-      private static final char[] TEXT_ESCAPES = new char[]{'\\', '<'};
+-      private static final char[] TAG_TOKENS = new char[]{'>', ':'};
+-      private static final char[] SINGLE_QUOTED_ESCAPES = new char[]{'\\', '\''};
+-      private static final char[] DOUBLE_QUOTED_ESCAPES = new char[]{'\\', '"'};
+-      private final SerializableResolver resolver;
+-      private final boolean strict;
+-      private final StringBuilder consumer;
+-      private String[] activeTags = new String[4];
+-      private int tagLevel = 0;
+-      private MiniMessageSerializer.Collector.TagState tagState = MiniMessageSerializer.Collector.TagState.TEXT;
+-      @Nullable
+-      Emitable componentClaim;
+-      final Set<String> claimedStyleElements = new HashSet<>();
+-
+-      Collector(final SerializableResolver resolver, final boolean strict, final StringBuilder consumer) {
+-         this.resolver = resolverx;
+-         this.strict = strictx;
+-         this.consumer = consumerx;
+-      }
+-
+-      private void pushActiveTag(final String tag) {
+-         if (this.tagLevel >= this.activeTags.length) {
+-            this.activeTags = Arrays.copyOf(this.activeTags, this.activeTags.length * 2);
+-         }
+-
+-         this.activeTags[this.tagLevel++] = tag;
+-      }
+-
+-      private String popTag(final boolean allowMarks) {
+-         if (this.tagLevel-- <= 0) {
+-            throw new IllegalStateException("Unbalanced tags, tried to pop below depth");
+-         } else {
+-            String var2 = this.activeTags[this.tagLevel];
+-            if (!allowMarks && var2 == "__<'\"\\MARK__") {
+-               throw new IllegalStateException("Tried to pop past mark, tag stack: " + Arrays.toString(this.activeTags) + " @ " + this.tagLevel);
+-            } else {
+-               return var2;
+-            }
+-         }
+-      }
+-
+-      void mark() {
+-         this.pushActiveTag("__<'\"\\MARK__");
+-      }
+-
+-      void popToMark() {
+-         if (this.tagLevel != 0) {
+-            String var1;
+-            while ((var1 = this.popTag(true)) != "__<'\"\\MARK__") {
+-               this.emitClose(var1);
+-            }
+-         }
+-      }
+-
+-      void popAll() {
+-         while (this.tagLevel > 0) {
+-            String var1 = this.activeTags[--this.tagLevel];
+-            if (var1 != "__<'\"\\MARK__") {
+-               this.emitClose(var1);
+-            }
+-         }
+-      }
+-
+-      void completeTag() {
+-         if (this.tagState.isTag) {
+-            this.consumer.append('>');
+-            this.tagState = MiniMessageSerializer.Collector.TagState.TEXT;
+-         }
+-      }
+-
+-      @NotNull
+-      public MiniMessageSerializer.Collector tag(@NotNull final String token) {
+-         this.completeTag();
+-         this.consumer.append('<');
+-         this.escapeTagContent(token, QuotingOverride.UNQUOTED);
+-         this.tagState = MiniMessageSerializer.Collector.TagState.MID;
+-         this.pushActiveTag(token);
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public TokenEmitter selfClosingTag(@NotNull final String token) {
+-         this.completeTag();
+-         this.consumer.append('<');
+-         this.escapeTagContent(token, QuotingOverride.UNQUOTED);
+-         this.tagState = MiniMessageSerializer.Collector.TagState.MID_SELF_CLOSING;
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public TokenEmitter argument(@NotNull final String arg) {
+-         if (!this.tagState.isTag) {
+-            throw new IllegalStateException("Not within a tag!");
+-         }
+-
+-         this.consumer.append(':');
+-         this.escapeTagContent(arg, null);
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public TokenEmitter argument(@NotNull final String arg, @NotNull final QuotingOverride quotingPreference) {
+-         if (!this.tagState.isTag) {
+-            throw new IllegalStateException("Not within a tag!");
+-         }
+-
+-         this.consumer.append(':');
+-         this.escapeTagContent(arg, Objects.requireNonNull(quotingPreference, "quotingPreference"));
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public TokenEmitter argument(@NotNull final Component arg) {
+-         String var2 = MiniMessageSerializer.serialize(arg, this.resolver, this.strict);
+-         return this.argument(var2, QuotingOverride.QUOTED);
+-      }
+-
+-      @NotNull
+-      public MiniMessageSerializer.Collector text(@NotNull final String text) {
+-         this.completeTag();
+-         appendEscaping(this.consumer, text, TEXT_ESCAPES, true);
+-         return this;
+-      }
+-
+-      private void escapeTagContent(final String content, @Nullable final QuotingOverride preference) {
+-         boolean var3 = preference == QuotingOverride.QUOTED;
+-         boolean var4 = false;
+-         boolean var5 = false;
+-
+-         for (int var6 = 0; var6 < content.length(); var6++) {
+-            char var7 = content.charAt(var6);
+-            if (var7 != '>' && var7 != ':' && var7 != ' ') {
+-               if (var7 == '\'') {
+-                  var4 = true;
+-                  break;
+-               }
+-
+-               if (var7 == '"') {
+-                  var5 = true;
+-                  if (var3 && var4) {
+-                     break;
+-                  }
+-               }
+-            } else {
+-               var3 = true;
+-               if (var4 && var5) {
+-                  break;
+-               }
+-            }
+-         }
+-
+-         if (var4) {
+-            this.consumer.append('"');
+-            appendEscaping(this.consumer, content, DOUBLE_QUOTED_ESCAPES, true);
+-            this.consumer.append('"');
+-         } else if (!var5 && !var3) {
+-            appendEscaping(this.consumer, content, TAG_TOKENS, false);
+-         } else {
+-            this.consumer.append('\'');
+-            appendEscaping(this.consumer, content, SINGLE_QUOTED_ESCAPES, true);
+-            this.consumer.append('\'');
+-         }
+-      }
+-
+-      static void appendEscaping(final StringBuilder builder, final String text, final char[] escapeChars, final boolean allowEscapes) {
+-         int var4 = 0;
+-         boolean var5 = false;
+-
+-         for (int var6 = 0; var6 < text.length(); var6++) {
+-            char var7 = text.charAt(var6);
+-            boolean var8 = false;
+-
+-            for (char var12 : escapeChars) {
+-               if (var7 == var12) {
+-                  if (!allowEscapes) {
+-                     throw new IllegalArgumentException("Invalid escapable character '" + var7 + "' found at index " + var6 + " in string '" + text + "'");
+-                  }
+-
+-                  var8 = true;
+-                  break;
+-               }
+-            }
+-
+-            if (var8) {
+-               if (var5) {
+-                  builder.append(text, var4, var6);
+-               }
+-
+-               var4 = var6 + 1;
+-               builder.append('\\').append(var7);
+-            } else {
+-               var5 = true;
+-            }
+-         }
+-
+-         if (var4 < text.length() && var5) {
+-            builder.append(text, var4, text.length());
+-         }
+-      }
+-
+-      @NotNull
+-      public MiniMessageSerializer.Collector pop() {
+-         this.emitClose(this.popTag(false));
+-         return this;
+-      }
+-
+-      private void emitClose(@NotNull final String tag) {
+-         if (this.tagState.isTag) {
+-            if (this.tagState == MiniMessageSerializer.Collector.TagState.MID) {
+-               this.consumer.append('/');
+-            }
+-
+-            this.consumer.append('>');
+-            this.tagState = MiniMessageSerializer.Collector.TagState.TEXT;
+-         } else {
+-            this.consumer.append('<').append('/');
+-            this.escapeTagContent(tag, QuotingOverride.UNQUOTED);
+-            this.consumer.append('>');
+-         }
+-      }
+-
+-      @Override
+-      public void style(@NotNull final String claimKey, @NotNull final Emitable styleClaim) {
+-         if (this.claimedStyleElements.add(Objects.requireNonNull(claimKey, "claimKey"))) {
+-            styleClaim.emit(this);
+-         }
+-      }
+-
+-      @Override
+-      public boolean component(@NotNull final Emitable componentClaim) {
+-         if (this.componentClaim != null) {
+-            return false;
+-         }
+-
+-         this.componentClaim = Objects.requireNonNull(componentClaimx, "componentClaim");
+-         return true;
+-      }
+-
+-      @Override
+-      public boolean componentClaimed() {
+-         return this.componentClaim != null;
+-      }
+-
+-      @Override
+-      public boolean styleClaimed(@NotNull final String claimId) {
+-         return this.claimedStyleElements.contains(claimId);
+-      }
+-
+-      void flushClaims(final Component component) {
+-         if (this.componentClaim != null) {
+-            this.componentClaim.emit(this);
+-            this.componentClaim = null;
+-         } else {
+-            if (!(component instanceof TextComponent)) {
+-               throw new IllegalStateException("Unclaimed component " + component);
+-            }
+-
+-            this.text(((TextComponent)component).content());
+-         }
+-
+-         this.claimedStyleElements.clear();
+-      }
+-
+-      enum TagState {
+-         TEXT(false),
+-         MID(true),
+-         MID_SELF_CLOSING(true);
+-
+-         final boolean isTag;
+-
+-         TagState(final boolean isTag) {
+-            this.isTag = isTagx;
+-         }
+-      }
+-   }
+-}

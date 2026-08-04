@@ -1,0 +1,52 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/serializer/ComponentClaimingResolverImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/serializer/ComponentClaimingResolverImpl.java
+deleted file mode 100644
+index e0ea8c1..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/serializer/ComponentClaimingResolverImpl.java
++++ /dev/null
+@@ -1,46 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer;
+-
+-import java.util.Set;
+-import java.util.function.BiFunction;
+-import java.util.function.Function;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.Context;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-class ComponentClaimingResolverImpl implements TagResolver, SerializableResolver.Single {
+-   @NotNull
+-   private final Set<String> names;
+-   @NotNull
+-   private final BiFunction<ArgumentQueue, Context, Tag> handler;
+-   @NotNull
+-   private final Function<Component, @Nullable Emitable> componentClaim;
+-
+-   ComponentClaimingResolverImpl(
+-      final Set<String> names, final BiFunction<ArgumentQueue, Context, Tag> handler, final Function<Component, @Nullable Emitable> componentClaim
+-   ) {
+-      this.names = namesx;
+-      this.handler = handlerx;
+-      this.componentClaim = componentClaimx;
+-   }
+-
+-   @Nullable
+-   @Override
+-   public Tag resolve(@NotNull final String name, @NotNull final ArgumentQueue arguments, @NotNull final Context ctx) {
+-      return !this.names.contains(name) ? null : this.handler.apply(arguments, ctx);
+-   }
+-
+-   @Override
+-   public boolean has(@NotNull final String name) {
+-      return this.names.contains(name);
+-   }
+-
+-   @Nullable
+-   @Override
+-   public Emitable claimComponent(@NotNull final Component component) {
+-      return this.componentClaim.apply(component);
+-   }
+-}

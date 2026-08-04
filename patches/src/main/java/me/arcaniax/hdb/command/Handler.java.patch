@@ -1,0 +1,13 @@
+diff --git a/src/main/java/me/arcaniax/hdb/command/Handler.java b/src/main/java/me/arcaniax/hdb/command/Handler.java
+index b9e07ef..05bb652 100644
+--- a/src/main/java/me/arcaniax/hdb/command/Handler.java
++++ b/src/main/java/me/arcaniax/hdb/command/Handler.java
+@@ -766,7 +766,7 @@ public class Handler implements TabExecutor {
+ 
+          if (var4.length == 1) {
+             ArrayList var12 = new ArrayList();
+-            List var17;
++            List<String> var17; // Luma - Decompile
+             if (var1.hasPermission("headdb.admin")) {
+                var17 = this.tabAdmin;
+             } else {

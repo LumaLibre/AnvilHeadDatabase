@@ -1,0 +1,126 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/key/KeyImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/key/KeyImpl.java
+deleted file mode 100644
+index e549f67..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/key/KeyImpl.java
++++ /dev/null
+@@ -1,120 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.key;
+-
+-import java.nio.charset.StandardCharsets;
+-import java.util.Arrays;
+-import java.util.Comparator;
+-import java.util.Objects;
+-import java.util.OptionalInt;
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import org.intellij.lang.annotations.RegExp;
+-import org.jetbrains.annotations.NotNull;
+-
+-final class KeyImpl implements Key {
+-   static final Comparator<? super Key> COMPARATOR = Comparator.comparing(Key::value).thenComparing(Key::namespace);
+-   @RegExp
+-   static final String NAMESPACE_PATTERN = "[a-z0-9_\\-.]+";
+-   @RegExp
+-   static final String VALUE_PATTERN = "[a-z0-9_\\-./]+";
+-   private final String namespace;
+-   private final String value;
+-
+-   KeyImpl(@NotNull final String namespace, @NotNull final String value) {
+-      checkError("namespace", namespacex, valuex, Key.checkNamespace(namespacex));
+-      checkError("value", namespacex, valuex, Key.checkValue(valuex));
+-      this.namespace = Objects.requireNonNull(namespacex, "namespace");
+-      this.value = Objects.requireNonNull(valuex, "value");
+-   }
+-
+-   private static void checkError(final String name, final String namespace, final String value, final OptionalInt index) {
+-      if (index.isPresent()) {
+-         int var4 = index.getAsInt();
+-         char var5 = valuex.charAt(var4);
+-         throw new InvalidKeyException(
+-            namespacex,
+-            valuex,
+-            String.format(
+-               "Non [a-z0-9_.-] character in %s of Key[%s] at index %d ('%s', bytes: %s)",
+-               name,
+-               asString(namespacex, valuex),
+-               var4,
+-               var5,
+-               Arrays.toString(String.valueOf(var5).getBytes(StandardCharsets.UTF_8))
+-            )
+-         );
+-      }
+-   }
+-
+-   static boolean allowedInNamespace(final char character) {
+-      return character == '_' || character == '-' || character >= 'a' && character <= 'z' || character >= '0' && character <= '9' || character == '.';
+-   }
+-
+-   static boolean allowedInValue(final char character) {
+-      return character == '_'
+-         || character == '-'
+-         || character >= 'a' && character <= 'z'
+-         || character >= '0' && character <= '9'
+-         || character == '.'
+-         || character == '/';
+-   }
+-
+-   @NotNull
+-   @Override
+-   public String namespace() {
+-      return this.namespace;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public String value() {
+-      return this.value;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public String asString() {
+-      return asString(this.namespace, this.value);
+-   }
+-
+-   @NotNull
+-   private static String asString(@NotNull final String namespace, @NotNull final String value) {
+-      return namespacex + ':' + valuex;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public String toString() {
+-      return this.asString();
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.of(ExaminableProperty.of("namespace", this.namespace), ExaminableProperty.of("value", this.value));
+-   }
+-
+-   @Override
+-   public boolean equals(final Object other) {
+-      if (this == other) {
+-         return true;
+-      }
+-
+-      if (!(other instanceof Key)) {
+-         return false;
+-      }
+-
+-      Key var2 = (Key)other;
+-      return Objects.equals(this.namespace, var2.namespace()) && Objects.equals(this.value, var2.value());
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      int var1 = this.namespace.hashCode();
+-      return 31 * var1 + this.value.hashCode();
+-   }
+-
+-   @Override
+-   public int compareTo(@NotNull final Key that) {
+-      return Key.super.compareTo(that);
+-   }
+-}

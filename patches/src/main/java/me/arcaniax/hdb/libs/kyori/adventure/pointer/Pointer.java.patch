@@ -1,0 +1,32 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/pointer/Pointer.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/pointer/Pointer.java
+deleted file mode 100644
+index b09ac11..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/pointer/Pointer.java
++++ /dev/null
+@@ -1,26 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.pointer;
+-
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.adventure.key.Key;
+-import me.arcaniax.hdb.libs.kyori.examination.Examinable;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import org.jetbrains.annotations.NotNull;
+-
+-public interface Pointer<V> extends Examinable {
+-   @NotNull
+-   static <V> Pointer<V> pointer(@NotNull final Class<V> type, @NotNull final Key key) {
+-      return new PointerImpl<>(type, key);
+-   }
+-
+-   @NotNull
+-   Class<V> type();
+-
+-   @NotNull
+-   Key key();
+-
+-   @NotNull
+-   @Override
+-   default Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.of(ExaminableProperty.of("type", this.type()), ExaminableProperty.of("key", this.key()));
+-   }
+-}

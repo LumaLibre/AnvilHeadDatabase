@@ -1,0 +1,28 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/ArgumentQueue.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/ArgumentQueue.java
+deleted file mode 100644
+index ca462f9..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/ArgumentQueue.java
++++ /dev/null
+@@ -1,22 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver;
+-
+-import java.util.function.Supplier;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-import org.jetbrains.annotations.ApiStatus.NonExtendable;
+-
+-@NonExtendable
+-public interface ArgumentQueue {
+-   Tag.@NotNull Argument pop();
+-
+-   Tag.@NotNull Argument popOr(@NotNull final String errorMessage);
+-
+-   Tag.@NotNull Argument popOr(@NotNull final Supplier<String> errorMessage);
+-
+-   Tag.@Nullable Argument peek();
+-
+-   boolean hasNext();
+-
+-   void reset();
+-}

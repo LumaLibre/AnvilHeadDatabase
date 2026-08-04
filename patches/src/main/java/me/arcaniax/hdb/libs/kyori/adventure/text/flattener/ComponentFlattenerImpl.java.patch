@@ -1,0 +1,207 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/flattener/ComponentFlattenerImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/flattener/ComponentFlattenerImpl.java
+deleted file mode 100644
+index 1c9d988..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/flattener/ComponentFlattenerImpl.java
++++ /dev/null
+@@ -1,201 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.flattener;
+-
+-import java.util.Collections;
+-import java.util.HashMap;
+-import java.util.Map;
+-import java.util.Objects;
+-import java.util.Map.Entry;
+-import java.util.concurrent.ConcurrentHashMap;
+-import java.util.concurrent.ConcurrentMap;
+-import java.util.function.BiConsumer;
+-import java.util.function.Consumer;
+-import java.util.function.Function;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.KeybindComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.ScoreComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.SelectorComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.TextComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.TranslatableComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class ComponentFlattenerImpl implements ComponentFlattener {
+-   static final ComponentFlattener BASIC = new ComponentFlattenerImpl.BuilderImpl()
+-      .mapper(KeybindComponent.class, var0 -> var0.keybind())
+-      .mapper(ScoreComponent.class, ScoreComponent::value)
+-      .mapper(SelectorComponent.class, SelectorComponent::pattern)
+-      .mapper(TextComponent.class, TextComponent::content)
+-      .mapper(TranslatableComponent.class, var0 -> {
+-         String var1 = var0.fallback();
+-         return var1 != null ? var1 : var0.key();
+-      })
+-      .build();
+-   static final ComponentFlattener TEXT_ONLY = new ComponentFlattenerImpl.BuilderImpl().mapper(TextComponent.class, TextComponent::content).build();
+-   private static final int MAX_DEPTH = 512;
+-   private final Map<Class<?>, Function<?, String>> flatteners;
+-   private final Map<Class<?>, BiConsumer<?, Consumer<Component>>> complexFlatteners;
+-   private final ConcurrentMap<Class<?>, ComponentFlattenerImpl.Handler> propagatedFlatteners = new ConcurrentHashMap<>();
+-   private final Function<Component, String> unknownHandler;
+-
+-   ComponentFlattenerImpl(
+-      final Map<Class<?>, Function<?, String>> flatteners,
+-      final Map<Class<?>, BiConsumer<?, Consumer<Component>>> complexFlatteners,
+-      @Nullable final Function<Component, String> unknownHandler
+-   ) {
+-      this.flatteners = Collections.unmodifiableMap(new HashMap<>(flattenersx));
+-      this.complexFlatteners = Collections.unmodifiableMap(new HashMap<>(complexFlattenersx));
+-      this.unknownHandler = unknownHandlerx;
+-   }
+-
+-   @Override
+-   public void flatten(@NotNull final Component input, @NotNull final FlattenerListener listener) {
+-      this.flatten0(input, listener, 0);
+-   }
+-
+-   private void flatten0(@NotNull final Component input, @NotNull final FlattenerListener listener, final int depth) {
+-      Objects.requireNonNull(input, "input");
+-      Objects.requireNonNull(listener, "listener");
+-      if (input != Component.empty()) {
+-         if (depth > 512) {
+-            throw new IllegalStateException("Exceeded maximum depth of 512 while attempting to flatten components!");
+-         }
+-
+-         ComponentFlattenerImpl.Handler var4 = this.flattener(input);
+-         Style var5 = input.style();
+-         listener.pushStyle(var5);
+-
+-         try {
+-            if (var4 != null) {
+-               var4.handle(input, listener, depth + 1);
+-            }
+-
+-            if (!input.children().isEmpty()) {
+-               for (Component var7 : input.children()) {
+-                  this.flatten0(var7, listener, depth + 1);
+-               }
+-            }
+-         } finally {
+-            listener.popStyle(var5);
+-         }
+-      }
+-   }
+-
+-   @Nullable
+-   private <T extends Component> ComponentFlattenerImpl.Handler flattener(final T test) {
+-      ComponentFlattenerImpl.Handler var2 = this.propagatedFlatteners.computeIfAbsent(test.getClass(), var1 -> {
+-         Function var2x = this.flatteners.get(var1);
+-         if (var2x != null) {
+-            return (var1x, var2xx, var3) -> var2xx.component((String)var2x.apply(var1x));
+-         }
+-
+-         for (Entry var4 : this.flatteners.entrySet()) {
+-            if (((Class)var4.getKey()).isAssignableFrom((Class<?>)var1)) {
+-               return (var1x, var2xx, var3) -> var2xx.component((String)((Function)var4.getValue()).apply(var1x));
+-            }
+-         }
+-
+-         BiConsumer var6 = this.complexFlatteners.get(var1);
+-         if (var6 != null) {
+-            return (var2xx, var3, var4x) -> var6.accept(var2xx, var3x -> this.flatten0(var3x, var3, var4x));
+-         }
+-
+-         for (Entry var5 : this.complexFlatteners.entrySet()) {
+-            if (((Class)var5.getKey()).isAssignableFrom((Class<?>)var1)) {
+-               return (var2xx, var3, var4x) -> ((BiConsumer)var5.getValue()).accept(var2xx, var3x -> this.flatten0(var3x, var3, var4x));
+-            }
+-         }
+-
+-         return ComponentFlattenerImpl.Handler.NONE;
+-      });
+-      if (var2 == ComponentFlattenerImpl.Handler.NONE) {
+-         return this.unknownHandler == null ? null : (var1, var2x, var3) -> var2x.component(this.unknownHandler.apply(var1));
+-      } else {
+-         return var2;
+-      }
+-   }
+-
+-   public ComponentFlattener.@NotNull Builder toBuilder() {
+-      return new ComponentFlattenerImpl.BuilderImpl(this.flatteners, this.complexFlatteners, this.unknownHandler);
+-   }
+-
+-   static final class BuilderImpl implements ComponentFlattener.Builder {
+-      private final Map<Class<?>, Function<?, String>> flatteners;
+-      private final Map<Class<?>, BiConsumer<?, Consumer<Component>>> complexFlatteners;
+-      @Nullable
+-      private Function<Component, String> unknownHandler;
+-
+-      BuilderImpl() {
+-         this.flatteners = new HashMap<>();
+-         this.complexFlatteners = new HashMap<>();
+-      }
+-
+-      BuilderImpl(
+-         final Map<Class<?>, Function<?, String>> flatteners,
+-         final Map<Class<?>, BiConsumer<?, Consumer<Component>>> complexFlatteners,
+-         @Nullable final Function<Component, String> unknownHandler
+-      ) {
+-         this.flatteners = new HashMap<>(flattenersx);
+-         this.complexFlatteners = new HashMap<>(complexFlattenersx);
+-         this.unknownHandler = unknownHandlerx;
+-      }
+-
+-      @NotNull
+-      public ComponentFlattener build() {
+-         return new ComponentFlattenerImpl(this.flatteners, this.complexFlatteners, this.unknownHandler);
+-      }
+-
+-      @Override
+-      public <T extends Component> ComponentFlattener.@NotNull Builder mapper(@NotNull final Class<T> type, @NotNull final Function<T, String> converter) {
+-         this.validateNoneInHierarchy(Objects.requireNonNull(type, "type"));
+-         this.flatteners.put(type, Objects.requireNonNull(converter, "converter"));
+-         this.complexFlatteners.remove(type);
+-         return this;
+-      }
+-
+-      @Override
+-      public <T extends Component> ComponentFlattener.@NotNull Builder complexMapper(
+-         @NotNull final Class<T> type, @NotNull final BiConsumer<T, Consumer<Component>> converter
+-      ) {
+-         this.validateNoneInHierarchy(Objects.requireNonNull(type, "type"));
+-         this.complexFlatteners.put(type, Objects.requireNonNull(converter, "converter"));
+-         this.flatteners.remove(type);
+-         return this;
+-      }
+-
+-      private void validateNoneInHierarchy(final Class<? extends Component> beingRegistered) {
+-         for (Class var3 : this.flatteners.keySet()) {
+-            testHierarchy(var3, beingRegistered);
+-         }
+-
+-         for (Class var5 : this.complexFlatteners.keySet()) {
+-            testHierarchy(var5, beingRegistered);
+-         }
+-      }
+-
+-      private static void testHierarchy(final Class<?> existing, final Class<?> beingRegistered) {
+-         if (!existing.equals(beingRegistered) && (existing.isAssignableFrom(beingRegistered) || beingRegistered.isAssignableFrom(existing))) {
+-            throw new IllegalArgumentException(
+-               "Conflict detected between already registered type "
+-                  + existing
+-                  + " and newly registered type "
+-                  + beingRegistered
+-                  + "! Types in a component flattener must not share a common hierarchy!"
+-            );
+-         }
+-      }
+-
+-      @Override
+-      public ComponentFlattener.@NotNull Builder unknownMapper(@Nullable final Function<Component, String> converter) {
+-         this.unknownHandler = converter;
+-         return this;
+-      }
+-   }
+-
+-   @FunctionalInterface
+-   interface Handler {
+-      ComponentFlattenerImpl.Handler NONE = (input, listener, depth) -> {};
+-
+-      void handle(final Component input, final FlattenerListener listener, final int depth);
+-   }
+-}

@@ -1,0 +1,99 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/parser/node/ElementNode.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/parser/node/ElementNode.java
+deleted file mode 100644
+index e8d2b87..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/parser/node/ElementNode.java
++++ /dev/null
+@@ -1,93 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.parser.node;
+-
+-import java.util.ArrayList;
+-import java.util.Arrays;
+-import java.util.Collections;
+-import java.util.List;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.parser.Token;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.parser.TokenType;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tree.Node;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-public class ElementNode implements Node {
+-   @Nullable
+-   private final ElementNode parent;
+-   @Nullable
+-   private final Token token;
+-   private final String sourceMessage;
+-   private final List<ElementNode> children = new ArrayList<>();
+-
+-   ElementNode(@Nullable final ElementNode parent, @Nullable final Token token, @NotNull final String sourceMessage) {
+-      this.parent = parentx;
+-      this.token = tokenx;
+-      this.sourceMessage = sourceMessagex;
+-   }
+-
+-   @Nullable
+-   public ElementNode parent() {
+-      return this.parent;
+-   }
+-
+-   @Nullable
+-   public Token token() {
+-      return this.token;
+-   }
+-
+-   @NotNull
+-   public String sourceMessage() {
+-      return this.sourceMessage;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public List<ElementNode> children() {
+-      return Collections.unmodifiableList(this.children);
+-   }
+-
+-   @NotNull
+-   public List<ElementNode> unsafeChildren() {
+-      return this.children;
+-   }
+-
+-   public void addChild(@NotNull final ElementNode childNode) {
+-      int var2 = this.children.size() - 1;
+-      if (childNode instanceof TextNode && !this.children.isEmpty() && this.children.get(var2) instanceof TextNode) {
+-         TextNode var3 = (TextNode)this.children.remove(var2);
+-         if (var3.token().endIndex() == childNode.token().startIndex()) {
+-            Token var4 = new Token(var3.token().startIndex(), childNode.token().endIndex(), TokenType.TEXT);
+-            this.children.add(new TextNode(this, var4, var3.sourceMessage()));
+-         } else {
+-            this.children.add(var3);
+-            this.children.add(childNode);
+-         }
+-      } else {
+-         this.children.add(childNode);
+-      }
+-   }
+-
+-   @NotNull
+-   public StringBuilder buildToString(@NotNull final StringBuilder sb, final int indent) {
+-      char[] var3 = this.ident(indent);
+-      sb.append(var3).append("Node {\n");
+-
+-      for (ElementNode var5 : this.children) {
+-         var5.buildToString(sb, indent + 1);
+-      }
+-
+-      sb.append(var3).append("}\n");
+-      return sb;
+-   }
+-
+-   char @NotNull [] ident(final int indent) {
+-      char[] var2 = new char[indent * 2];
+-      Arrays.fill(var2, ' ');
+-      return var2;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public String toString() {
+-      return this.buildToString(new StringBuilder(), 0).toString();
+-   }
+-}

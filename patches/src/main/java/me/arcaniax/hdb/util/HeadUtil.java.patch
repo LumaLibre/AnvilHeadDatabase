@@ -1,0 +1,13 @@
+diff --git a/src/main/java/me/arcaniax/hdb/util/HeadUtil.java b/src/main/java/me/arcaniax/hdb/util/HeadUtil.java
+index 3f2b78a..b2e2349 100644
+--- a/src/main/java/me/arcaniax/hdb/util/HeadUtil.java
++++ b/src/main/java/me/arcaniax/hdb/util/HeadUtil.java
+@@ -146,7 +146,7 @@ public class HeadUtil {
+          if (NMSUtil.isAtLeastVersion(1, 21, 0)) {
+             HashMap var14 = getMojangUUID(var0);
+             UUID var15 = (UUID)var14.keySet().iterator().next();
+-            Object var9 = (String)var14.get(var15);
++            String var9 = (String)var14.get(var15); // Luma - Decompile
+             if (!var15.toString().equalsIgnoreCase("bffd61e5-d21e-4d33-bcdf-40d153ef158d")) {
+                if (Bukkit.getPlayer(var15) != null && Bukkit.getPlayer(var15).isOnline()) {
+                   var5.setOwningPlayer(Bukkit.getOfflinePlayer(var15));

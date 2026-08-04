@@ -1,0 +1,17 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/AbstractTag.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/AbstractTag.java
+deleted file mode 100644
+index e8139ab..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/AbstractTag.java
++++ /dev/null
+@@ -1,11 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.internal.Internals;
+-import me.arcaniax.hdb.libs.kyori.examination.Examinable;
+-
+-abstract class AbstractTag implements Tag, Examinable {
+-   @Override
+-   public final String toString() {
+-      return Internals.toString(this);
+-   }
+-}

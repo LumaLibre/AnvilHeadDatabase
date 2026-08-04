@@ -1,0 +1,63 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/SingleResolver.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/SingleResolver.java
+deleted file mode 100644
+index 927c2ab..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/SingleResolver.java
++++ /dev/null
+@@ -1,57 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver;
+-
+-import java.util.Map;
+-import java.util.Objects;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import org.jetbrains.annotations.NotNull;
+-
+-final class SingleResolver implements TagResolver.Single, MappableResolver {
+-   private final String key;
+-   private final Tag tag;
+-
+-   SingleResolver(final String key, final Tag tag) {
+-      this.key = keyx;
+-      this.tag = tagx;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public String key() {
+-      return this.key;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Tag tag() {
+-      return this.tag;
+-   }
+-
+-   @Override
+-   public boolean contributeToMap(@NotNull final Map<String, Tag> map) {
+-      map.put(this.key, this.tag);
+-      return true;
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      return Objects.hash(this.key, this.tag);
+-   }
+-
+-   @Override
+-   public boolean equals(final Object other) {
+-      if (this == other) {
+-         return true;
+-      }
+-
+-      if (other == null) {
+-         return false;
+-      }
+-
+-      if (this.getClass() != other.getClass()) {
+-         return false;
+-      }
+-
+-      SingleResolver var2 = (SingleResolver)other;
+-      return Objects.equals(this.key, var2.key) && Objects.equals(this.tag, var2.tag);
+-   }
+-}

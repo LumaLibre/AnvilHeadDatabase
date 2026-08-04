@@ -1,0 +1,23 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/Modifying.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/Modifying.java
+deleted file mode 100644
+index c619341..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/Modifying.java
++++ /dev/null
+@@ -1,17 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tree.Node;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.ApiStatus.OverrideOnly;
+-
+-@OverrideOnly
+-public interface Modifying extends Tag {
+-   default void visit(@NotNull final Node current, final int depth) {
+-   }
+-
+-   default void postVisit() {
+-   }
+-
+-   Component apply(@NotNull final Component current, final int depth);
+-}

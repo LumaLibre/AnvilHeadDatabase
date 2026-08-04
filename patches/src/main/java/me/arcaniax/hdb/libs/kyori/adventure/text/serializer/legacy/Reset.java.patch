@@ -1,0 +1,13 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/serializer/legacy/Reset.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/serializer/legacy/Reset.java
+deleted file mode 100644
+index 529cee2..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/serializer/legacy/Reset.java
++++ /dev/null
+@@ -1,7 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.serializer.legacy;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.TextFormat;
+-
+-public enum Reset implements TextFormat {
+-   INSTANCE;
+-}

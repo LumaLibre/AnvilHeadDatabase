@@ -1,0 +1,152 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/HoverTag.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/HoverTag.java
+deleted file mode 100644
+index f6ebba3..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/HoverTag.java
++++ /dev/null
+@@ -1,146 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.standard;
+-
+-import java.util.UUID;
+-import me.arcaniax.hdb.libs.kyori.adventure.key.InvalidKeyException;
+-import me.arcaniax.hdb.libs.kyori.adventure.key.Key;
+-import me.arcaniax.hdb.libs.kyori.adventure.nbt.api.BinaryTagHolder;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.event.HoverEvent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.Context;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.ParsingException;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.StyleClaim;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.TokenEmitter;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class HoverTag {
+-   private static final String HOVER = "hover";
+-   static final TagResolver RESOLVER = SerializableResolver.claimingStyle(
+-      "hover", HoverTag::create, StyleClaim.claim("hover", Style::hoverEvent, HoverTag::emit)
+-   );
+-
+-   private HoverTag() {
+-   }
+-
+-   static Tag create(final ArgumentQueue args, final Context ctx) {
+-      String var2 = args.popOr("Hover event requires an action as its first argument").value();
+-      HoverEvent.Action var3 = HoverEvent.Action.NAMES.value(var2);
+-      HoverTag.ActionHandler var4 = actionHandler(var3);
+-      if (var4 == null) {
+-         throw ctx.newException("Don't know how to turn '" + args + "' into a hover event", args);
+-      } else {
+-         return Tag.styling(HoverEvent.hoverEvent(var3, var4.parse(args, ctx)));
+-      }
+-   }
+-
+-   static void emit(final HoverEvent<?> event, final TokenEmitter emitter) {
+-      HoverTag.ActionHandler var2 = actionHandler(event.action());
+-      emitter.tag("hover").argument(HoverEvent.Action.NAMES.key(event.action()));
+-      var2.emit(event.value(), emitter);
+-   }
+-
+-   @Nullable
+-   static <V> HoverTag.ActionHandler<V> actionHandler(final HoverEvent.Action<V> action) {
+-      HoverTag.ActionHandler var1 = null;
+-      if (action == HoverEvent.Action.SHOW_TEXT) {
+-         var1 = HoverTag.ShowText.INSTANCE;
+-      } else if (action == HoverEvent.Action.SHOW_ITEM) {
+-         var1 = HoverTag.ShowItem.INSTANCE;
+-      } else if (action == HoverEvent.Action.SHOW_ENTITY) {
+-         var1 = HoverTag.ShowEntity.INSTANCE;
+-      }
+-
+-      return var1;
+-   }
+-
+-   @NotNull
+-   static String compactAsString(@NotNull final Key key) {
+-      return key.namespace().equals("minecraft") ? key.value() : key.asString();
+-   }
+-
+-   interface ActionHandler<V> {
+-      @NotNull
+-      V parse(@NotNull final ArgumentQueue args, @NotNull final Context ctx) throws ParsingException;
+-
+-      void emit(final V event, final TokenEmitter emit);
+-   }
+-
+-   static final class ShowEntity implements HoverTag.ActionHandler<HoverEvent.ShowEntity> {
+-      static final HoverTag.ShowEntity INSTANCE = new HoverTag.ShowEntity();
+-
+-      private ShowEntity() {
+-      }
+-
+-      public HoverEvent.@NotNull ShowEntity parse(@NotNull final ArgumentQueue args, @NotNull final Context ctx) {
+-         try {
+-            Key var3 = Key.key(args.popOr("Show entity needs a type argument").value());
+-            UUID var4 = UUID.fromString(args.popOr("Show entity needs an entity UUID").value());
+-            if (args.hasNext()) {
+-               Component var5 = ctx.deserialize(args.pop().value());
+-               return HoverEvent.ShowEntity.showEntity(var3, var4, var5);
+-            } else {
+-               return HoverEvent.ShowEntity.showEntity(var3, var4);
+-            }
+-         } catch (IllegalArgumentException | InvalidKeyException var6) {
+-            throw ctx.newException("Exception parsing show_entity hover", var6, args);
+-         }
+-      }
+-
+-      public void emit(final HoverEvent.ShowEntity event, final TokenEmitter emit) {
+-         emit.argument(HoverTag.compactAsString(event.type())).argument(event.id().toString());
+-         if (event.name() != null) {
+-            emit.argument(event.name());
+-         }
+-      }
+-   }
+-
+-   static final class ShowItem implements HoverTag.ActionHandler<HoverEvent.ShowItem> {
+-      private static final HoverTag.ShowItem INSTANCE = new HoverTag.ShowItem();
+-
+-      private ShowItem() {
+-      }
+-
+-      public HoverEvent.@NotNull ShowItem parse(@NotNull final ArgumentQueue args, @NotNull final Context ctx) {
+-         try {
+-            Key var3 = Key.key(args.popOr("Show item hover needs at least an item ID").value());
+-            int var4 = args.hasNext() ? args.pop().asInt().orElseThrow(() -> ctx.newException("The count argument was not a valid integer")) : 1;
+-            return args.hasNext()
+-               ? HoverEvent.ShowItem.showItem(var3, var4, BinaryTagHolder.binaryTagHolder(args.pop().value()))
+-               : HoverEvent.ShowItem.showItem(var3, var4);
+-         } catch (InvalidKeyException | NumberFormatException var5) {
+-            throw ctx.newException("Exception parsing show_item hover", var5, args);
+-         }
+-      }
+-
+-      public void emit(final HoverEvent.ShowItem event, final TokenEmitter emit) {
+-         emit.argument(HoverTag.compactAsString(event.item()));
+-         if (event.count() != 1 || event.nbt() != null) {
+-            emit.argument(Integer.toString(event.count()));
+-            if (event.nbt() != null) {
+-               emit.argument(event.nbt().string());
+-            }
+-         }
+-      }
+-   }
+-
+-   static final class ShowText implements HoverTag.ActionHandler<Component> {
+-      private static final HoverTag.ShowText INSTANCE = new HoverTag.ShowText();
+-
+-      private ShowText() {
+-      }
+-
+-      @NotNull
+-      public Component parse(@NotNull final ArgumentQueue args, @NotNull final Context ctx) {
+-         return ctx.deserialize(args.popOr("show_text action requires a message").value());
+-      }
+-
+-      public void emit(final Component event, final TokenEmitter emit) {
+-         emit.argument(event);
+-      }
+-   }
+-}

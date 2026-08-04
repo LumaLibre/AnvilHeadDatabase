@@ -1,0 +1,78 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/Codec.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/Codec.java
+deleted file mode 100644
+index aeeebc1..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/Codec.java
++++ /dev/null
+@@ -1,72 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.util;
+-
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval;
+-
+-public interface Codec<D, E, DX extends Throwable, EX extends Throwable> {
+-   @NotNull
+-   static <D, E, DX extends Throwable, EX extends Throwable> Codec<D, E, DX, EX> codec(
+-      @NotNull final Codec.Decoder<D, E, DX> decoder, @NotNull final Codec.Encoder<D, E, EX> encoder
+-   ) {
+-      // $VF: Couldn't be decompiled
+-      // Please report this to the Vineflower issue tracker, at https://github.com/Vineflower/vineflower/issues with a copy of the class file (if you have the rights to distribute it!)
+-      // java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
+-      //   at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:100)
+-      //   at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:106)
+-      //   at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:302)
+-      //   at java.base/java.util.Objects.checkIndex(Objects.java:365)
+-      //   at java.base/java.util.ArrayList.get(ArrayList.java:428)
+-      //   at org.jetbrains.java.decompiler.struct.gen.generics.GenericMethodDescriptor.verifyTypes(GenericMethodDescriptor.java:54)
+-      //   at org.jetbrains.java.decompiler.main.ClassWriter.writeMethod(ClassWriter.java:1273)
+-      //
+-      // Bytecode:
+-      // 0: new me/arcaniax/hdb/libs/kyori/adventure/util/Codec$1
+-      // 3: dup
+-      // 4: aload 0
+-      // 5: aload 1
+-      // 6: invokespecial me/arcaniax/hdb/libs/kyori/adventure/util/Codec$1.<init> (Lme/arcaniax/hdb/libs/kyori/adventure/util/Codec$Decoder;Lme/arcaniax/hdb/libs/kyori/adventure/util/Codec$Encoder;)V
+-      // 9: areturn
+-   }
+-
+-   @Deprecated
+-   @ScheduledForRemoval(inVersion = "5.0.0")
+-   @NotNull
+-   static <D, E, DX extends Throwable, EX extends Throwable> Codec<D, E, DX, EX> of(
+-      @NotNull final Codec.Decoder<D, E, DX> decoder, @NotNull final Codec.Encoder<D, E, EX> encoder
+-   ) {
+-      // $VF: Couldn't be decompiled
+-      // Please report this to the Vineflower issue tracker, at https://github.com/Vineflower/vineflower/issues with a copy of the class file (if you have the rights to distribute it!)
+-      // java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
+-      //   at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:100)
+-      //   at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:106)
+-      //   at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:302)
+-      //   at java.base/java.util.Objects.checkIndex(Objects.java:365)
+-      //   at java.base/java.util.ArrayList.get(ArrayList.java:428)
+-      //   at org.jetbrains.java.decompiler.struct.gen.generics.GenericMethodDescriptor.verifyTypes(GenericMethodDescriptor.java:54)
+-      //   at org.jetbrains.java.decompiler.main.ClassWriter.writeMethod(ClassWriter.java:1273)
+-      //
+-      // Bytecode:
+-      // 0: new me/arcaniax/hdb/libs/kyori/adventure/util/Codec$2
+-      // 3: dup
+-      // 4: aload 0
+-      // 5: aload 1
+-      // 6: invokespecial me/arcaniax/hdb/libs/kyori/adventure/util/Codec$2.<init> (Lme/arcaniax/hdb/libs/kyori/adventure/util/Codec$Decoder;Lme/arcaniax/hdb/libs/kyori/adventure/util/Codec$Encoder;)V
+-      // 9: areturn
+-   }
+-
+-   @NotNull
+-   D decode(@NotNull final E encoded) throws DX;
+-
+-   @NotNull
+-   E encode(@NotNull final D decoded) throws EX;
+-
+-   interface Decoder<D, E, X extends Throwable> {
+-      @NotNull
+-      D decode(@NotNull final E encoded) throws X;
+-   }
+-
+-   interface Encoder<D, E, X extends Throwable> {
+-      @NotNull
+-      E encode(@NotNull final D decoded) throws X;
+-   }
+-}

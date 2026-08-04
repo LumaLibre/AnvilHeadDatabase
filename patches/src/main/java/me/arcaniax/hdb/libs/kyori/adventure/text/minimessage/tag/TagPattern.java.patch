@@ -1,0 +1,21 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/TagPattern.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/TagPattern.java
+deleted file mode 100644
+index 2140c72..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/TagPattern.java
++++ /dev/null
+@@ -1,15 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag;
+-
+-import java.lang.annotation.Documented;
+-import java.lang.annotation.ElementType;
+-import java.lang.annotation.Retention;
+-import java.lang.annotation.RetentionPolicy;
+-import java.lang.annotation.Target;
+-import org.intellij.lang.annotations.Pattern;
+-
+-@Documented
+-@Retention(RetentionPolicy.CLASS)
+-@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER, ElementType.LOCAL_VARIABLE})
+-@Pattern("[!?#]?[a-z0-9_-]*")
+-public @interface TagPattern {
+-}

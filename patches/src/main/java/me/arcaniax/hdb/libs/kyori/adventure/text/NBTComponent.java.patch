@@ -1,0 +1,47 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/NBTComponent.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/NBTComponent.java
+deleted file mode 100644
+index 4ce3248..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/NBTComponent.java
++++ /dev/null
+@@ -1,41 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import org.jetbrains.annotations.Contract;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-public interface NBTComponent<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends BuildableComponent<C, B> {
+-   @NotNull
+-   String nbtPath();
+-
+-   @Contract(pure = true)
+-   @NotNull
+-   C nbtPath(@NotNull final String nbtPath);
+-
+-   boolean interpret();
+-
+-   @Contract(pure = true)
+-   @NotNull
+-   C interpret(final boolean interpret);
+-
+-   @Nullable
+-   Component separator();
+-
+-   @NotNull
+-   C separator(@Nullable final ComponentLike separator);
+-
+-   @NotNull
+-   @Override
+-   default Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.concat(
+-         Stream.of(
+-            ExaminableProperty.of("nbtPath", this.nbtPath()),
+-            ExaminableProperty.of("interpret", this.interpret()),
+-            ExaminableProperty.of("separator", this.separator())
+-         ),
+-         BuildableComponent.super.examinableProperties()
+-      );
+-   }
+-}

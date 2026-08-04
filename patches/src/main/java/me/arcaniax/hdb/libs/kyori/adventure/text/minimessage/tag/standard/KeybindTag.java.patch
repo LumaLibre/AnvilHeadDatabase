@@ -1,0 +1,39 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/KeybindTag.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/KeybindTag.java
+deleted file mode 100644
+index 5c79dd9..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/KeybindTag.java
++++ /dev/null
+@@ -1,33 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.standard;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.KeybindComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.Context;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.Emitable;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class KeybindTag {
+-   public static final String KEYBIND = "key";
+-   static final TagResolver RESOLVER = SerializableResolver.claimingComponent("key", KeybindTag::create, KeybindTag::emit);
+-
+-   private KeybindTag() {
+-   }
+-
+-   static Tag create(final ArgumentQueue args, final Context ctx) {
+-      return Tag.inserting(Component.keybind(args.popOr("A keybind id is required").value()));
+-   }
+-
+-   @Nullable
+-   static Emitable emit(final Component component) {
+-      if (!(component instanceof KeybindComponent)) {
+-         return null;
+-      }
+-
+-      String var1 = ((KeybindComponent)component).keybind();
+-      return var1x -> var1x.tag("key").argument(var1);
+-   }
+-}

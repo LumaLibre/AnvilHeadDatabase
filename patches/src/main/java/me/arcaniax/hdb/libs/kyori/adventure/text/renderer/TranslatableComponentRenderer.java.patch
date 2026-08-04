@@ -1,0 +1,197 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/renderer/TranslatableComponentRenderer.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/renderer/TranslatableComponentRenderer.java
+deleted file mode 100644
+index 7e48555..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/renderer/TranslatableComponentRenderer.java
++++ /dev/null
+@@ -1,191 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.renderer;
+-
+-import java.text.AttributedCharacterIterator;
+-import java.text.MessageFormat;
+-import java.text.MessageFormat.Field;
+-import java.util.ArrayList;
+-import java.util.List;
+-import java.util.Locale;
+-import java.util.Objects;
+-import java.util.Set;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.BlockNBTComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.BuildableComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.ComponentBuilder;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.EntityNBTComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.KeybindComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.NBTComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.NBTComponentBuilder;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.ScoreComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.SelectorComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.StorageNBTComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.TextComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.TranslatableComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.event.HoverEvent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import me.arcaniax.hdb.libs.kyori.adventure.translation.Translator;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-public abstract class TranslatableComponentRenderer<C> extends AbstractComponentRenderer<C> {
+-   private static final Set<Style.Merge> MERGES = Style.Merge.merges(Style.Merge.COLOR, Style.Merge.DECORATIONS, Style.Merge.INSERTION, Style.Merge.FONT);
+-
+-   @NotNull
+-   public static TranslatableComponentRenderer<Locale> usingTranslationSource(@NotNull final Translator source) {
+-      Objects.requireNonNull(source, "source");
+-      return new TranslatableComponentRenderer<Locale>() {
+-         @Nullable
+-         protected MessageFormat translate(@NotNull final String key, @NotNull final Locale context) {
+-            return source.translate(key, context);
+-         }
+-
+-         @NotNull
+-         protected Component renderTranslatable(@NotNull final TranslatableComponent component, @NotNull final Locale context) {
+-            Component var3 = source.translate(component, context);
+-            return var3 != null ? var3 : super.renderTranslatable(component, context);
+-         }
+-      };
+-   }
+-
+-   @Nullable
+-   protected MessageFormat translate(@NotNull final String key, @NotNull final C context) {
+-      return null;
+-   }
+-
+-   @Nullable
+-   protected MessageFormat translate(@NotNull final String key, @Nullable final String fallback, @NotNull final C context) {
+-      return this.translate(key, (C)context);
+-   }
+-
+-   @NotNull
+-   @Override
+-   protected Component renderBlockNbt(@NotNull final BlockNBTComponent component, @NotNull final C context) {
+-      BlockNBTComponent.Builder var3 = ((BlockNBTComponent.Builder)this.nbt((C)context, Component.blockNBT(), component)).pos(component.pos());
+-      return this.mergeStyleAndOptionallyDeepRender(component, var3, (C)context);
+-   }
+-
+-   @NotNull
+-   @Override
+-   protected Component renderEntityNbt(@NotNull final EntityNBTComponent component, @NotNull final C context) {
+-      EntityNBTComponent.Builder var3 = ((EntityNBTComponent.Builder)this.nbt((C)context, Component.entityNBT(), component)).selector(component.selector());
+-      return this.mergeStyleAndOptionallyDeepRender(component, var3, (C)context);
+-   }
+-
+-   @NotNull
+-   @Override
+-   protected Component renderStorageNbt(@NotNull final StorageNBTComponent component, @NotNull final C context) {
+-      StorageNBTComponent.Builder var3 = ((StorageNBTComponent.Builder)this.nbt((C)context, Component.storageNBT(), component)).storage(component.storage());
+-      return this.mergeStyleAndOptionallyDeepRender(component, var3, (C)context);
+-   }
+-
+-   protected <O extends NBTComponent<O, B>, B extends NBTComponentBuilder<O, B>> B nbt(@NotNull final C context, final B builder, final O oldComponent) {
+-      builder.nbtPath(oldComponent.nbtPath()).interpret(oldComponent.interpret());
+-      Component var4 = oldComponent.separator();
+-      if (var4 != null) {
+-         builder.separator(this.render(var4, (C)context));
+-      }
+-
+-      return (B)builder;
+-   }
+-
+-   @NotNull
+-   @Override
+-   protected Component renderKeybind(@NotNull final KeybindComponent component, @NotNull final C context) {
+-      KeybindComponent.Builder var3 = Component.keybind().keybind(component.keybind());
+-      return this.mergeStyleAndOptionallyDeepRender(component, var3, (C)context);
+-   }
+-
+-   @NotNull
+-   @Override
+-   protected Component renderScore(@NotNull final ScoreComponent component, @NotNull final C context) {
+-      ScoreComponent.Builder var3 = Component.score().name(component.name()).objective(component.objective()).value(component.value());
+-      return this.mergeStyleAndOptionallyDeepRender(component, var3, (C)context);
+-   }
+-
+-   @NotNull
+-   @Override
+-   protected Component renderSelector(@NotNull final SelectorComponent component, @NotNull final C context) {
+-      SelectorComponent.Builder var3 = Component.selector().pattern(component.pattern());
+-      return this.mergeStyleAndOptionallyDeepRender(component, var3, (C)context);
+-   }
+-
+-   @NotNull
+-   @Override
+-   protected Component renderText(@NotNull final TextComponent component, @NotNull final C context) {
+-      TextComponent.Builder var3 = Component.text().content(component.content());
+-      return this.mergeStyleAndOptionallyDeepRender(component, var3, (C)context);
+-   }
+-
+-   @NotNull
+-   @Override
+-   protected Component renderTranslatable(@NotNull final TranslatableComponent component, @NotNull final C context) {
+-      MessageFormat var3 = this.translate(component.key(), component.fallback(), (C)context);
+-      if (var3 != null) {
+-         List var11 = component.args();
+-         TextComponent.Builder var12 = Component.text();
+-         this.mergeStyle(component, var12, (C)context);
+-         if (var11.isEmpty()) {
+-            var12.content(var3.format((Object[])null, new StringBuffer(), null).toString());
+-            return this.optionallyRenderChildrenAppendAndBuild(component.children(), var12, (C)context);
+-         }
+-
+-         Object[] var13 = new Object[var11.size()];
+-         StringBuffer var14 = var3.format(var13, new StringBuffer(), null);
+-         AttributedCharacterIterator var8 = var3.formatToCharacterIterator(var13);
+-
+-         while (var8.getIndex() < var8.getEndIndex()) {
+-            int var9 = var8.getRunLimit();
+-            Integer var10 = (Integer)var8.getAttribute(Field.ARGUMENT);
+-            if (var10 != null) {
+-               var12.append(this.render((Component)var11.get(var10), (C)context));
+-            } else {
+-               var12.append(Component.text(var14.substring(var8.getIndex(), var9)));
+-            }
+-
+-            var8.setIndex(var9);
+-         }
+-
+-         return this.optionallyRenderChildrenAppendAndBuild(component.children(), var12, (C)context);
+-      } else {
+-         TranslatableComponent.Builder var4 = Component.translatable().key(component.key()).fallback(component.fallback());
+-         if (!component.args().isEmpty()) {
+-            ArrayList var5 = new ArrayList<>(component.args());
+-            int var6 = 0;
+-
+-            for (int var7 = var5.size(); var6 < var7; var6++) {
+-               var5.set(var6, this.render((Component)var5.get(var6), (C)context));
+-            }
+-
+-            var4.args(var5);
+-         }
+-
+-         return this.mergeStyleAndOptionallyDeepRender(component, var4, (C)context);
+-      }
+-   }
+-
+-   protected <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O mergeStyleAndOptionallyDeepRender(
+-      final Component component, final B builder, final C context
+-   ) {
+-      this.mergeStyle(component, (B)builder, (C)context);
+-      return this.optionallyRenderChildrenAppendAndBuild(component.children(), (B)builder, (C)context);
+-   }
+-
+-   protected <O extends BuildableComponent<O, B>, B extends ComponentBuilder<O, B>> O optionallyRenderChildrenAppendAndBuild(
+-      final List<Component> children, final B builder, final C context
+-   ) {
+-      if (!children.isEmpty()) {
+-         children.forEach(var3 -> builder.append(this.render(var3, (C)context)));
+-      }
+-
+-      return (O)builder.build();
+-   }
+-
+-   protected <B extends ComponentBuilder<?, ?>> void mergeStyle(final Component component, final B builder, final C context) {
+-      builder.mergeStyle(component, MERGES);
+-      builder.clickEvent(component.clickEvent());
+-      HoverEvent var4 = component.hoverEvent();
+-      if (var4 != null) {
+-         builder.hoverEvent(var4.withRenderedValue(this, (C)context));
+-      }
+-   }
+-}

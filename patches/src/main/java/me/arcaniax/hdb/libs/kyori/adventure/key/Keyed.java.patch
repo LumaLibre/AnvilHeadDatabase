@@ -1,0 +1,14 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/key/Keyed.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/key/Keyed.java
+deleted file mode 100644
+index 12d2f80..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/key/Keyed.java
++++ /dev/null
+@@ -1,8 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.key;
+-
+-import org.jetbrains.annotations.NotNull;
+-
+-public interface Keyed {
+-   @NotNull
+-   Key key();
+-}

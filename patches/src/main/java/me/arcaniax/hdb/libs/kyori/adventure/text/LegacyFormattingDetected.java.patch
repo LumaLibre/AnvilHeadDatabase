@@ -1,0 +1,20 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/LegacyFormattingDetected.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/LegacyFormattingDetected.java
+deleted file mode 100644
+index 0717c79..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/LegacyFormattingDetected.java
++++ /dev/null
+@@ -1,14 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.util.Nag;
+-
+-final class LegacyFormattingDetected extends Nag {
+-   private static final long serialVersionUID = -947793022628807411L;
+-
+-   LegacyFormattingDetected(final Component component) {
+-      super(
+-         "Legacy formatting codes have been detected in a component - this is unsupported behaviour. Please refer to the Adventure documentation (https://docs.advntr.dev) for more information. Component: "
+-            + component
+-      );
+-   }
+-}

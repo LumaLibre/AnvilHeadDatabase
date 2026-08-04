@@ -1,0 +1,39 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/MonkeyBars.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/MonkeyBars.java
+deleted file mode 100644
+index 60c1798..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/MonkeyBars.java
++++ /dev/null
+@@ -1,33 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.util;
+-
+-import java.util.ArrayList;
+-import java.util.Collections;
+-import java.util.EnumSet;
+-import java.util.List;
+-import java.util.Set;
+-import org.jetbrains.annotations.NotNull;
+-
+-public final class MonkeyBars {
+-   private MonkeyBars() {
+-   }
+-
+-   @SafeVarargs
+-   @NotNull
+-   public static <E extends Enum<E>> Set<E> enumSet(final Class<E> type, final E @NotNull ... constants) {
+-      EnumSet var2 = EnumSet.noneOf(type);
+-      Collections.addAll(var2, (E[])constants);
+-      return Collections.unmodifiableSet(var2);
+-   }
+-
+-   @NotNull
+-   public static <T> List<T> addOne(@NotNull final List<T> oldList, final T newElement) {
+-      if (oldList.isEmpty()) {
+-         return Collections.singletonList((T)newElement);
+-      }
+-
+-      ArrayList var2 = new ArrayList(oldList.size() + 1);
+-      var2.addAll(oldList);
+-      var2.add(newElement);
+-      return Collections.unmodifiableList(var2);
+-   }
+-}

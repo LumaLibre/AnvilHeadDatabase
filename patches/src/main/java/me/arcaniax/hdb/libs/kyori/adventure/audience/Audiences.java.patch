@@ -1,0 +1,29 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/audience/Audiences.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/audience/Audiences.java
+deleted file mode 100644
+index 61e5255..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/audience/Audiences.java
++++ /dev/null
+@@ -1,23 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.audience;
+-
+-import java.util.ArrayList;
+-import java.util.Collections;
+-import java.util.function.Consumer;
+-import java.util.stream.Collector;
+-import java.util.stream.Collectors;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.ComponentLike;
+-import org.jetbrains.annotations.NotNull;
+-
+-public final class Audiences {
+-   static final Collector<? super Audience, ?, ForwardingAudience> COLLECTOR = Collectors.collectingAndThen(
+-      Collectors.toCollection(ArrayList::new), var0 -> Audience.audience(Collections.unmodifiableCollection(var0))
+-   );
+-
+-   private Audiences() {
+-   }
+-
+-   @NotNull
+-   public static Consumer<? super Audience> sendingMessage(@NotNull final ComponentLike message) {
+-      return var1 -> var1.sendMessage(message);
+-   }
+-}

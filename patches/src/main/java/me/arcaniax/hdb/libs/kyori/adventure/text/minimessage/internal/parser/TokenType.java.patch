@@ -1,0 +1,15 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/parser/TokenType.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/parser/TokenType.java
+deleted file mode 100644
+index 3b0d409..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/internal/parser/TokenType.java
++++ /dev/null
+@@ -1,9 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.parser;
+-
+-public enum TokenType {
+-   TEXT,
+-   OPEN_TAG,
+-   OPEN_CLOSE_TAG,
+-   CLOSE_TAG,
+-   TAG_VALUE;
+-}

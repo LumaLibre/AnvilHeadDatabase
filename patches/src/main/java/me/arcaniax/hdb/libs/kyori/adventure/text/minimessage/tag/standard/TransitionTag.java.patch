@@ -1,0 +1,143 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/TransitionTag.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/TransitionTag.java
+deleted file mode 100644
+index fce06b9..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/TransitionTag.java
++++ /dev/null
+@@ -1,137 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.standard;
+-
+-import java.util.ArrayList;
+-import java.util.Arrays;
+-import java.util.Collections;
+-import java.util.List;
+-import java.util.Objects;
+-import java.util.OptionalDouble;
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.NamedTextColor;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.TextColor;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.Context;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Inserting;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-import me.arcaniax.hdb.libs.kyori.examination.Examinable;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import org.jetbrains.annotations.NotNull;
+-
+-public final class TransitionTag implements Inserting, Examinable {
+-   public static final String TRANSITION = "transition";
+-   private final TextColor[] colors;
+-   private final float phase;
+-   private final boolean negativePhase;
+-   static final TagResolver RESOLVER = TagResolver.resolver("transition", TransitionTag::create);
+-
+-   static Tag create(final ArgumentQueue args, final Context ctx) {
+-      float var2 = 0.0F;
+-      List var3;
+-      if (!args.hasNext()) {
+-         var3 = Collections.emptyList();
+-      } else {
+-         var3 = new ArrayList();
+-
+-         while (args.hasNext()) {
+-            Tag.Argument var4 = args.pop();
+-            if (!args.hasNext()) {
+-               OptionalDouble var5 = var4.asDouble();
+-               if (var5.isPresent()) {
+-                  var2 = (float)var5.getAsDouble();
+-                  if (var2 < -1.0F || var2 > 1.0F) {
+-                     throw ctx.newException(String.format("Gradient phase is out of range (%s). Must be in the range [-1.0f, 1.0f] (inclusive).", var2), args);
+-                  }
+-
+-                  if (var3.size() < 2) {
+-                     throw ctx.newException("Invalid transition, not enough colors. Transitions must have at least two colors.", args);
+-                  }
+-                  break;
+-               }
+-            }
+-
+-            String var7 = var4.value();
+-            TextColor var6;
+-            if (var7.charAt(0) == '#') {
+-               var6 = TextColor.fromHexString(var7);
+-            } else {
+-               var6 = NamedTextColor.NAMES.value(var4.lowerValue());
+-            }
+-
+-            if (var6 == null) {
+-               throw ctx.newException(String.format("Unable to parse a color from '%s'. Please use named colors or hex (#RRGGBB) colors.", var7), args);
+-            }
+-
+-            var3.add(var6);
+-         }
+-      }
+-
+-      return new TransitionTag(var2, var3);
+-   }
+-
+-   private TransitionTag(final float phase, final List<TextColor> colors) {
+-      if (phasex < 0.0F) {
+-         this.negativePhase = true;
+-         this.phase = 1.0F + phasex;
+-         Collections.reverse(colorsx);
+-      } else {
+-         this.negativePhase = false;
+-         this.phase = phasex;
+-      }
+-
+-      if (colorsx.isEmpty()) {
+-         this.colors = new TextColor[]{TextColor.color(16777215), TextColor.color(0)};
+-      } else {
+-         this.colors = colorsx.toArray(new TextColor[0]);
+-      }
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Component value() {
+-      return Component.text("", this.color());
+-   }
+-
+-   private TextColor color() {
+-      float var1 = 1.0F / (this.colors.length - 1);
+-
+-      for (int var2 = 1; var2 < this.colors.length; var2++) {
+-         float var3 = var2 * var1;
+-         if (var3 >= this.phase) {
+-            float var4 = 1.0F + (this.phase - var3) * (this.colors.length - 1);
+-            if (this.negativePhase) {
+-               return TextColor.lerp(1.0F - var4, this.colors[var2], this.colors[var2 - 1]);
+-            }
+-
+-            return TextColor.lerp(var4, this.colors[var2 - 1], this.colors[var2]);
+-         }
+-      }
+-
+-      return this.colors[0];
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.of(ExaminableProperty.of("phase", this.phase), ExaminableProperty.of("colors", this.colors));
+-   }
+-
+-   @Override
+-   public boolean equals(final Object other) {
+-      if (this == other) {
+-         return true;
+-      } else if (other != null && this.getClass() == other.getClass()) {
+-         TransitionTag var2 = (TransitionTag)other;
+-         return this.phase == var2.phase && Arrays.equals(this.colors, var2.colors);
+-      } else {
+-         return false;
+-      }
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      int var1 = Objects.hash(this.phase);
+-      return 31 * var1 + Arrays.hashCode(this.colors);
+-   }
+-}

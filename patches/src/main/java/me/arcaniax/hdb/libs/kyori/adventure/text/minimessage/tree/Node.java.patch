@@ -1,0 +1,31 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tree/Node.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tree/Node.java
+deleted file mode 100644
+index 46d5716..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tree/Node.java
++++ /dev/null
+@@ -1,25 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tree;
+-
+-import java.util.List;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-import org.jetbrains.annotations.ApiStatus.NonExtendable;
+-
+-@NonExtendable
+-public interface Node {
+-   @NotNull
+-   @Override
+-   String toString();
+-
+-   @NotNull
+-   List<? extends Node> children();
+-
+-   @Nullable
+-   Node parent();
+-
+-   @NonExtendable
+-   interface Root extends Node {
+-      @NotNull
+-      String input();
+-   }
+-}

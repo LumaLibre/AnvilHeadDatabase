@@ -1,0 +1,41 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/ScoreTag.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/ScoreTag.java
+deleted file mode 100644
+index c79d2ef..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/standard/ScoreTag.java
++++ /dev/null
+@@ -1,35 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.standard;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.ScoreComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.Context;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.Emitable;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.ArgumentQueue;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class ScoreTag {
+-   public static final String SCORE = "score";
+-   static final TagResolver RESOLVER = SerializableResolver.claimingComponent("score", ScoreTag::create, ScoreTag::emit);
+-
+-   private ScoreTag() {
+-   }
+-
+-   static Tag create(final ArgumentQueue args, final Context ctx) {
+-      String var2 = args.popOr("A scoreboard member name is required").value();
+-      String var3 = args.popOr("An objective name is required").value();
+-      return Tag.inserting(Component.score(var2, var3));
+-   }
+-
+-   @Nullable
+-   static Emitable emit(final Component component) {
+-      if (!(component instanceof ScoreComponent)) {
+-         return null;
+-      }
+-
+-      ScoreComponent var1 = (ScoreComponent)component;
+-      return var1x -> var1x.tag("score").argument(var1.name()).argument(var1.objective());
+-   }
+-}

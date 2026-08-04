@@ -1,0 +1,67 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/NBTComponentImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/NBTComponentImpl.java
+deleted file mode 100644
+index 6d7114b..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/NBTComponentImpl.java
++++ /dev/null
+@@ -1,61 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-import java.util.List;
+-import java.util.Objects;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-abstract class NBTComponentImpl<C extends NBTComponent<C, B>, B extends NBTComponentBuilder<C, B>> extends AbstractComponent implements NBTComponent<C, B> {
+-   static final boolean INTERPRET_DEFAULT = false;
+-   final String nbtPath;
+-   final boolean interpret;
+-   @Nullable
+-   final Component separator;
+-
+-   NBTComponentImpl(
+-      @NotNull final List<Component> children, @NotNull final Style style, final String nbtPath, final boolean interpret, @Nullable final Component separator
+-   ) {
+-      super(children, style);
+-      this.nbtPath = nbtPathx;
+-      this.interpret = interpretx;
+-      this.separator = separatorx;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public String nbtPath() {
+-      return this.nbtPath;
+-   }
+-
+-   @Override
+-   public boolean interpret() {
+-      return this.interpret;
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (this == other) {
+-         return true;
+-      }
+-
+-      if (!(other instanceof NBTComponent)) {
+-         return false;
+-      }
+-
+-      if (!super.equals(other)) {
+-         return false;
+-      }
+-
+-      NBTComponent var2 = (NBTComponent)other;
+-      return Objects.equals(this.nbtPath, var2.nbtPath()) && this.interpret == var2.interpret() && Objects.equals(this.separator, var2.separator());
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      int var1 = super.hashCode();
+-      var1 = 31 * var1 + this.nbtPath.hashCode();
+-      var1 = 31 * var1 + Boolean.hashCode(this.interpret);
+-      return 31 * var1 + Objects.hashCode(this.separator);
+-   }
+-}

@@ -1,0 +1,100 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/SequentialTagResolver.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/SequentialTagResolver.java
+deleted file mode 100644
+index b8ebb9f..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/minimessage/tag/resolver/SequentialTagResolver.java
++++ /dev/null
+@@ -1,94 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.resolver;
+-
+-import java.util.Arrays;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.Context;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.ParsingException;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.ClaimConsumer;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.internal.serializer.SerializableResolver;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.minimessage.tag.Tag;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class SequentialTagResolver implements TagResolver, SerializableResolver {
+-   final TagResolver[] resolvers;
+-
+-   SequentialTagResolver(@NotNull final TagResolver[] resolvers) {
+-      this.resolvers = resolversx;
+-   }
+-
+-   @Nullable
+-   @Override
+-   public Tag resolve(@NotNull final String name, @NotNull final ArgumentQueue arguments, @NotNull final Context ctx) {
+-      ParsingException var4 = null;
+-
+-      for (TagResolver var8 : this.resolvers) {
+-         try {
+-            Tag var9 = var8.resolve(name, arguments, ctx);
+-            if (var9 != null) {
+-               return var9;
+-            }
+-         } catch (ParsingException var11) {
+-            arguments.reset();
+-            if (var4 == null) {
+-               var4 = var11;
+-            } else {
+-               var4.addSuppressed(var11);
+-            }
+-         } catch (Exception var12) {
+-            arguments.reset();
+-            ParsingException var10 = ctx.newException("Exception thrown while parsing <" + name + ">", var12, arguments);
+-            if (var4 == null) {
+-               var4 = var10;
+-            } else {
+-               var4.addSuppressed(var10);
+-            }
+-         }
+-      }
+-
+-      if (var4 != null) {
+-         throw var4;
+-      } else {
+-         return null;
+-      }
+-   }
+-
+-   @Override
+-   public boolean has(@NotNull final String name) {
+-      for (TagResolver var5 : this.resolvers) {
+-         if (var5.has(name)) {
+-            return true;
+-         }
+-      }
+-
+-      return false;
+-   }
+-
+-   @Override
+-   public void handle(@NotNull final Component serializable, @NotNull final ClaimConsumer consumer) {
+-      for (TagResolver var6 : this.resolvers) {
+-         if (var6 instanceof SerializableResolver) {
+-            ((SerializableResolver)var6).handle(serializable, consumer);
+-         }
+-      }
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (other == this) {
+-         return true;
+-      }
+-
+-      if (!(other instanceof SequentialTagResolver)) {
+-         return false;
+-      }
+-
+-      SequentialTagResolver var2 = (SequentialTagResolver)other;
+-      return Arrays.equals(this.resolvers, var2.resolvers);
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      return Arrays.hashCode(this.resolvers);
+-   }
+-}

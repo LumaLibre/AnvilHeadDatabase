@@ -1,0 +1,14 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/identity/Identified.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/identity/Identified.java
+deleted file mode 100644
+index f24ba7f..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/identity/Identified.java
++++ /dev/null
+@@ -1,8 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.identity;
+-
+-import org.jetbrains.annotations.NotNull;
+-
+-public interface Identified {
+-   @NotNull
+-   Identity identity();
+-}

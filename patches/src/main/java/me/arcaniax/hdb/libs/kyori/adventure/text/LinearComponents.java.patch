@@ -1,0 +1,62 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/LinearComponents.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/LinearComponents.java
+deleted file mode 100644
+index a677294..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/LinearComponents.java
++++ /dev/null
+@@ -1,56 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.StyleBuilderApplicable;
+-import org.jetbrains.annotations.NotNull;
+-
+-public final class LinearComponents {
+-   private LinearComponents() {
+-   }
+-
+-   @NotNull
+-   public static Component linear(@NotNull final ComponentBuilderApplicable... applicables) {
+-      int var1 = applicables.length;
+-      if (var1 == 0) {
+-         return Component.empty();
+-      }
+-
+-      if (var1 == 1) {
+-         ComponentBuilderApplicable var6 = applicables[0];
+-         if (var6 instanceof ComponentLike) {
+-            return ((ComponentLike)var6).asComponent();
+-         } else {
+-            throw nothingComponentLike();
+-         }
+-      } else {
+-         TextComponentImpl.BuilderImpl var2 = new TextComponentImpl.BuilderImpl();
+-         Style.Builder var3 = null;
+-
+-         for (int var4 = 0; var4 < var1; var4++) {
+-            ComponentBuilderApplicable var5 = applicables[var4];
+-            if (var5 instanceof StyleBuilderApplicable) {
+-               if (var3 == null) {
+-                  var3 = Style.style();
+-               }
+-
+-               var3.apply((StyleBuilderApplicable)var5);
+-            } else if (var3 != null && var5 instanceof ComponentLike) {
+-               var2.applicableApply(((ComponentLike)var5).asComponent().style(var3));
+-            } else {
+-               var2.applicableApply(var5);
+-            }
+-         }
+-
+-         int var7 = var2.children.size();
+-         if (var7 == 0) {
+-            throw nothingComponentLike();
+-         } else {
+-            return var7 == 1 && !var2.hasStyle() ? var2.children.get(0) : var2.build();
+-         }
+-      }
+-   }
+-
+-   private static IllegalStateException nothingComponentLike() {
+-      return new IllegalStateException("Cannot build component linearly - nothing component-like was given");
+-   }
+-}

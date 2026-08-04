@@ -1,0 +1,57 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/format/TextColorImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/format/TextColorImpl.java
+deleted file mode 100644
+index 7e0f75b..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/format/TextColorImpl.java
++++ /dev/null
+@@ -1,51 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.format;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.util.HSVLike;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-import org.jetbrains.annotations.Debug.Renderer;
+-
+-@Renderer(text = "asHexString()")
+-final class TextColorImpl implements TextColor {
+-   private final int value;
+-
+-   TextColorImpl(final int value) {
+-      this.value = valuex;
+-   }
+-
+-   @Override
+-   public int value() {
+-      return this.value;
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (this == other) {
+-         return true;
+-      }
+-
+-      if (!(other instanceof TextColorImpl)) {
+-         return false;
+-      }
+-
+-      TextColorImpl var2 = (TextColorImpl)other;
+-      return this.value == var2.value;
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      return this.value;
+-   }
+-
+-   @Override
+-   public String toString() {
+-      return this.asHexString();
+-   }
+-
+-   static float distance(@NotNull final HSVLike self, @NotNull final HSVLike other) {
+-      float var2 = 3.0F * Math.min(Math.abs(self.h() - other.h()), 1.0F - Math.abs(self.h() - other.h()));
+-      float var3 = self.s() - other.s();
+-      float var4 = self.v() - other.v();
+-      return var2 * var2 + var3 * var3 + var4 * var4;
+-   }
+-}

@@ -1,0 +1,509 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/event/HoverEvent.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/event/HoverEvent.java
+deleted file mode 100644
+index 0d470e3..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/event/HoverEvent.java
++++ /dev/null
+@@ -1,503 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.event;
+-
+-import java.util.Objects;
+-import java.util.UUID;
+-import java.util.function.UnaryOperator;
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.adventure.internal.Internals;
+-import me.arcaniax.hdb.libs.kyori.adventure.key.Key;
+-import me.arcaniax.hdb.libs.kyori.adventure.key.Keyed;
+-import me.arcaniax.hdb.libs.kyori.adventure.nbt.api.BinaryTagHolder;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.ComponentLike;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.StyleBuilderApplicable;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.renderer.ComponentRenderer;
+-import me.arcaniax.hdb.libs.kyori.adventure.util.Index;
+-import me.arcaniax.hdb.libs.kyori.examination.Examinable;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-import org.jetbrains.annotations.Range;
+-import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval;
+-
+-public final class HoverEvent<V> implements Examinable, HoverEventSource<V>, StyleBuilderApplicable {
+-   private final HoverEvent.Action<V> action;
+-   private final V value;
+-
+-   @NotNull
+-   public static HoverEvent<Component> showText(@NotNull final ComponentLike text) {
+-      return showText(text.asComponent());
+-   }
+-
+-   @NotNull
+-   public static HoverEvent<Component> showText(@NotNull final Component text) {
+-      return new HoverEvent<>(HoverEvent.Action.SHOW_TEXT, text);
+-   }
+-
+-   @NotNull
+-   public static HoverEvent<HoverEvent.ShowItem> showItem(@NotNull final Key item, final @Range(from = 0L, to = 2147483647L) int count) {
+-      return showItem(item, count, null);
+-   }
+-
+-   @NotNull
+-   public static HoverEvent<HoverEvent.ShowItem> showItem(@NotNull final Keyed item, final @Range(from = 0L, to = 2147483647L) int count) {
+-      return showItem(item, count, null);
+-   }
+-
+-   @NotNull
+-   public static HoverEvent<HoverEvent.ShowItem> showItem(
+-      @NotNull final Key item, final @Range(from = 0L, to = 2147483647L) int count, @Nullable final BinaryTagHolder nbt
+-   ) {
+-      return showItem(HoverEvent.ShowItem.of(item, count, nbt));
+-   }
+-
+-   @NotNull
+-   public static HoverEvent<HoverEvent.ShowItem> showItem(
+-      @NotNull final Keyed item, final @Range(from = 0L, to = 2147483647L) int count, @Nullable final BinaryTagHolder nbt
+-   ) {
+-      return showItem(HoverEvent.ShowItem.of(item, count, nbt));
+-   }
+-
+-   @NotNull
+-   public static HoverEvent<HoverEvent.ShowItem> showItem(@NotNull final HoverEvent.ShowItem item) {
+-      return new HoverEvent<>(HoverEvent.Action.SHOW_ITEM, item);
+-   }
+-
+-   @NotNull
+-   public static HoverEvent<HoverEvent.ShowEntity> showEntity(@NotNull final Key type, @NotNull final UUID id) {
+-      return showEntity(type, id, null);
+-   }
+-
+-   @NotNull
+-   public static HoverEvent<HoverEvent.ShowEntity> showEntity(@NotNull final Keyed type, @NotNull final UUID id) {
+-      return showEntity(type, id, null);
+-   }
+-
+-   @NotNull
+-   public static HoverEvent<HoverEvent.ShowEntity> showEntity(@NotNull final Key type, @NotNull final UUID id, @Nullable final Component name) {
+-      return showEntity(HoverEvent.ShowEntity.of(type, id, name));
+-   }
+-
+-   @NotNull
+-   public static HoverEvent<HoverEvent.ShowEntity> showEntity(@NotNull final Keyed type, @NotNull final UUID id, @Nullable final Component name) {
+-      return showEntity(HoverEvent.ShowEntity.of(type, id, name));
+-   }
+-
+-   @NotNull
+-   public static HoverEvent<HoverEvent.ShowEntity> showEntity(@NotNull final HoverEvent.ShowEntity entity) {
+-      return new HoverEvent<>(HoverEvent.Action.SHOW_ENTITY, entity);
+-   }
+-
+-   @Deprecated
+-   @NotNull
+-   public static HoverEvent<String> showAchievement(@NotNull final String value) {
+-      return new HoverEvent<>(HoverEvent.Action.SHOW_ACHIEVEMENT, valuex);
+-   }
+-
+-   @NotNull
+-   public static <V> HoverEvent<V> hoverEvent(@NotNull final HoverEvent.Action<V> action, @NotNull final V value) {
+-      return new HoverEvent<>(actionx, (V)valuex);
+-   }
+-
+-   private HoverEvent(@NotNull final HoverEvent.Action<V> action, @NotNull final V value) {
+-      this.action = Objects.requireNonNull(actionx, "action");
+-      this.value = Objects.requireNonNull((V)valuex, "value");
+-   }
+-
+-   @NotNull
+-   public HoverEvent.Action<V> action() {
+-      return this.action;
+-   }
+-
+-   @NotNull
+-   public V value() {
+-      return this.value;
+-   }
+-
+-   @NotNull
+-   public HoverEvent<V> value(@NotNull final V value) {
+-      return new HoverEvent<>(this.action, (V)valuex);
+-   }
+-
+-   @NotNull
+-   public <C> HoverEvent<V> withRenderedValue(@NotNull final ComponentRenderer<C> renderer, @NotNull final C context) {
+-      Object var3 = this.value;
+-      Object var4 = this.action.renderer.render(renderer, context, (V)var3);
+-      return var4 != var3 ? new HoverEvent<>(this.action, (V)var4) : this;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public HoverEvent<V> asHoverEvent() {
+-      return this;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public HoverEvent<V> asHoverEvent(@NotNull final UnaryOperator<V> op) {
+-      return op == UnaryOperator.identity() ? this : new HoverEvent<>(this.action, op.apply(this.value));
+-   }
+-
+-   @Override
+-   public void styleApply(final Style.@NotNull Builder style) {
+-      style.hoverEvent(this);
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (this == other) {
+-         return true;
+-      } else if (other != null && this.getClass() == other.getClass()) {
+-         HoverEvent var2 = (HoverEvent)other;
+-         return this.action == var2.action && this.value.equals(var2.value);
+-      } else {
+-         return false;
+-      }
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      int var1 = this.action.hashCode();
+-      return 31 * var1 + this.value.hashCode();
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.of(ExaminableProperty.of("action", this.action), ExaminableProperty.of("value", this.value));
+-   }
+-
+-   @Override
+-   public String toString() {
+-      return Internals.toString(this);
+-   }
+-
+-   public static final class Action<V> {
+-      public static final HoverEvent.Action<Component> SHOW_TEXT = new HoverEvent.Action<>(
+-         "show_text", Component.class, true, new HoverEvent.Action.Renderer<Component>() {
+-            @NotNull
+-            public <C> Component render(@NotNull final ComponentRenderer<C> renderer, @NotNull final C context, @NotNull final Component value) {
+-               return renderer.render(value, context);
+-            }
+-         }
+-      );
+-      public static final HoverEvent.Action<HoverEvent.ShowItem> SHOW_ITEM = new HoverEvent.Action<>(
+-         "show_item",
+-         HoverEvent.ShowItem.class,
+-         true,
+-         new HoverEvent.Action.Renderer<HoverEvent.ShowItem>() {
+-            @NotNull
+-            public <C> HoverEvent.ShowItem render(
+-               @NotNull final ComponentRenderer<C> renderer, @NotNull final C context, @NotNull final HoverEvent.ShowItem value
+-            ) {
+-               return value;
+-            }
+-         }
+-      );
+-      public static final HoverEvent.Action<HoverEvent.ShowEntity> SHOW_ENTITY = new HoverEvent.Action<>(
+-         "show_entity",
+-         HoverEvent.ShowEntity.class,
+-         true,
+-         new HoverEvent.Action.Renderer<HoverEvent.ShowEntity>() {
+-            @NotNull
+-            public <C> HoverEvent.ShowEntity render(
+-               @NotNull final ComponentRenderer<C> renderer, @NotNull final C context, @NotNull final HoverEvent.ShowEntity value
+-            ) {
+-               return value.name == null ? value : value.name(renderer.render(value.name, context));
+-            }
+-         }
+-      );
+-      @Deprecated
+-      public static final HoverEvent.Action<String> SHOW_ACHIEVEMENT = new HoverEvent.Action<>(
+-         "show_achievement", String.class, true, new HoverEvent.Action.Renderer<String>() {
+-            @NotNull
+-            public <C> String render(@NotNull final ComponentRenderer<C> renderer, @NotNull final C context, @NotNull final String value) {
+-               return value;
+-            }
+-         }
+-      );
+-      public static final Index<String, HoverEvent.Action<?>> NAMES = Index.create(var0 -> var0.name, SHOW_TEXT, SHOW_ITEM, SHOW_ENTITY, SHOW_ACHIEVEMENT);
+-      private final String name;
+-      private final Class<V> type;
+-      private final boolean readable;
+-      private final HoverEvent.Action.Renderer<V> renderer;
+-
+-      Action(final String name, final Class<V> type, final boolean readable, final HoverEvent.Action.Renderer<V> renderer) {
+-         this.name = namex;
+-         this.type = typex;
+-         this.readable = readablex;
+-         this.renderer = rendererx;
+-      }
+-
+-      @NotNull
+-      public Class<V> type() {
+-         return this.type;
+-      }
+-
+-      public boolean readable() {
+-         return this.readable;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public String toString() {
+-         return this.name;
+-      }
+-
+-      @FunctionalInterface
+-      interface Renderer<V> {
+-         @NotNull
+-         <C> V render(@NotNull final ComponentRenderer<C> renderer, @NotNull final C context, @NotNull final V value);
+-      }
+-   }
+-
+-   public static final class ShowEntity implements Examinable {
+-      private final Key type;
+-      private final UUID id;
+-      private final Component name;
+-
+-      @NotNull
+-      public static HoverEvent.ShowEntity showEntity(@NotNull final Key type, @NotNull final UUID id) {
+-         return showEntity(typex, idx, null);
+-      }
+-
+-      @Deprecated
+-      @ScheduledForRemoval(inVersion = "5.0.0")
+-      @NotNull
+-      public static HoverEvent.ShowEntity of(@NotNull final Key type, @NotNull final UUID id) {
+-         return of(typex, idx, null);
+-      }
+-
+-      @NotNull
+-      public static HoverEvent.ShowEntity showEntity(@NotNull final Keyed type, @NotNull final UUID id) {
+-         return showEntity(typex, idx, null);
+-      }
+-
+-      @Deprecated
+-      @ScheduledForRemoval(inVersion = "5.0.0")
+-      @NotNull
+-      public static HoverEvent.ShowEntity of(@NotNull final Keyed type, @NotNull final UUID id) {
+-         return of(typex, idx, null);
+-      }
+-
+-      @NotNull
+-      public static HoverEvent.ShowEntity showEntity(@NotNull final Key type, @NotNull final UUID id, @Nullable final Component name) {
+-         return new HoverEvent.ShowEntity(Objects.requireNonNull(typex, "type"), Objects.requireNonNull(idx, "id"), namex);
+-      }
+-
+-      @Deprecated
+-      @ScheduledForRemoval(inVersion = "5.0.0")
+-      @NotNull
+-      public static HoverEvent.ShowEntity of(@NotNull final Key type, @NotNull final UUID id, @Nullable final Component name) {
+-         return new HoverEvent.ShowEntity(Objects.requireNonNull(typex, "type"), Objects.requireNonNull(idx, "id"), namex);
+-      }
+-
+-      @NotNull
+-      public static HoverEvent.ShowEntity showEntity(@NotNull final Keyed type, @NotNull final UUID id, @Nullable final Component name) {
+-         return new HoverEvent.ShowEntity(Objects.requireNonNull(typex, "type").key(), Objects.requireNonNull(idx, "id"), namex);
+-      }
+-
+-      @Deprecated
+-      @ScheduledForRemoval(inVersion = "5.0.0")
+-      @NotNull
+-      public static HoverEvent.ShowEntity of(@NotNull final Keyed type, @NotNull final UUID id, @Nullable final Component name) {
+-         return new HoverEvent.ShowEntity(Objects.requireNonNull(typex, "type").key(), Objects.requireNonNull(idx, "id"), namex);
+-      }
+-
+-      private ShowEntity(@NotNull final Key type, @NotNull final UUID id, @Nullable final Component name) {
+-         this.type = typex;
+-         this.id = idx;
+-         this.name = namex;
+-      }
+-
+-      @NotNull
+-      public Key type() {
+-         return this.type;
+-      }
+-
+-      @NotNull
+-      public HoverEvent.ShowEntity type(@NotNull final Key type) {
+-         return Objects.requireNonNull(typex, "type").equals(this.type) ? this : new HoverEvent.ShowEntity(typex, this.id, this.name);
+-      }
+-
+-      @NotNull
+-      public HoverEvent.ShowEntity type(@NotNull final Keyed type) {
+-         return this.type(Objects.requireNonNull(typex, "type").key());
+-      }
+-
+-      @NotNull
+-      public UUID id() {
+-         return this.id;
+-      }
+-
+-      @NotNull
+-      public HoverEvent.ShowEntity id(@NotNull final UUID id) {
+-         return Objects.requireNonNull(idx).equals(this.id) ? this : new HoverEvent.ShowEntity(this.type, idx, this.name);
+-      }
+-
+-      @Nullable
+-      public Component name() {
+-         return this.name;
+-      }
+-
+-      @NotNull
+-      public HoverEvent.ShowEntity name(@Nullable final Component name) {
+-         return Objects.equals(namex, this.name) ? this : new HoverEvent.ShowEntity(this.type, this.id, namex);
+-      }
+-
+-      @Override
+-      public boolean equals(@Nullable final Object other) {
+-         if (this == other) {
+-            return true;
+-         } else if (other != null && this.getClass() == other.getClass()) {
+-            HoverEvent.ShowEntity var2 = (HoverEvent.ShowEntity)other;
+-            return this.type.equals(var2.type) && this.id.equals(var2.id) && Objects.equals(this.name, var2.name);
+-         } else {
+-            return false;
+-         }
+-      }
+-
+-      @Override
+-      public int hashCode() {
+-         int var1 = this.type.hashCode();
+-         var1 = 31 * var1 + this.id.hashCode();
+-         return 31 * var1 + Objects.hashCode(this.name);
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Stream<? extends ExaminableProperty> examinableProperties() {
+-         return Stream.of(ExaminableProperty.of("type", this.type), ExaminableProperty.of("id", this.id), ExaminableProperty.of("name", this.name));
+-      }
+-
+-      @Override
+-      public String toString() {
+-         return Internals.toString(this);
+-      }
+-   }
+-
+-   public static final class ShowItem implements Examinable {
+-      private final Key item;
+-      private final int count;
+-      @Nullable
+-      private final BinaryTagHolder nbt;
+-
+-      @NotNull
+-      public static HoverEvent.ShowItem showItem(@NotNull final Key item, final @Range(from = 0L, to = 2147483647L) int count) {
+-         return showItem(itemx, countx, null);
+-      }
+-
+-      @Deprecated
+-      @ScheduledForRemoval(inVersion = "5.0.0")
+-      @NotNull
+-      public static HoverEvent.ShowItem of(@NotNull final Key item, final @Range(from = 0L, to = 2147483647L) int count) {
+-         return of(itemx, countx, null);
+-      }
+-
+-      @NotNull
+-      public static HoverEvent.ShowItem showItem(@NotNull final Keyed item, final @Range(from = 0L, to = 2147483647L) int count) {
+-         return showItem(itemx, countx, null);
+-      }
+-
+-      @Deprecated
+-      @ScheduledForRemoval(inVersion = "5.0.0")
+-      @NotNull
+-      public static HoverEvent.ShowItem of(@NotNull final Keyed item, final @Range(from = 0L, to = 2147483647L) int count) {
+-         return of(itemx, countx, null);
+-      }
+-
+-      @NotNull
+-      public static HoverEvent.ShowItem showItem(
+-         @NotNull final Key item, final @Range(from = 0L, to = 2147483647L) int count, @Nullable final BinaryTagHolder nbt
+-      ) {
+-         return new HoverEvent.ShowItem(Objects.requireNonNull(itemx, "item"), countx, nbtx);
+-      }
+-
+-      @Deprecated
+-      @ScheduledForRemoval(inVersion = "5.0.0")
+-      @NotNull
+-      public static HoverEvent.ShowItem of(@NotNull final Key item, final @Range(from = 0L, to = 2147483647L) int count, @Nullable final BinaryTagHolder nbt) {
+-         return new HoverEvent.ShowItem(Objects.requireNonNull(itemx, "item"), countx, nbtx);
+-      }
+-
+-      @NotNull
+-      public static HoverEvent.ShowItem showItem(
+-         @NotNull final Keyed item, final @Range(from = 0L, to = 2147483647L) int count, @Nullable final BinaryTagHolder nbt
+-      ) {
+-         return new HoverEvent.ShowItem(Objects.requireNonNull(itemx, "item").key(), countx, nbtx);
+-      }
+-
+-      @Deprecated
+-      @ScheduledForRemoval(inVersion = "5.0.0")
+-      @NotNull
+-      public static HoverEvent.ShowItem of(@NotNull final Keyed item, final @Range(from = 0L, to = 2147483647L) int count, @Nullable final BinaryTagHolder nbt) {
+-         return new HoverEvent.ShowItem(Objects.requireNonNull(itemx, "item").key(), countx, nbtx);
+-      }
+-
+-      private ShowItem(@NotNull final Key item, final @Range(from = 0L, to = 2147483647L) int count, @Nullable final BinaryTagHolder nbt) {
+-         this.item = itemx;
+-         this.count = countx;
+-         this.nbt = nbtx;
+-      }
+-
+-      @NotNull
+-      public Key item() {
+-         return this.item;
+-      }
+-
+-      @NotNull
+-      public HoverEvent.ShowItem item(@NotNull final Key item) {
+-         return Objects.requireNonNull(itemx, "item").equals(this.item) ? this : new HoverEvent.ShowItem(itemx, this.count, this.nbt);
+-      }
+-
+-      public @Range(from = 0L, to = 2147483647L) int count() {
+-         return this.count;
+-      }
+-
+-      @NotNull
+-      public HoverEvent.ShowItem count(final @Range(from = 0L, to = 2147483647L) int count) {
+-         return countx == this.count ? this : new HoverEvent.ShowItem(this.item, countx, this.nbt);
+-      }
+-
+-      @Nullable
+-      public BinaryTagHolder nbt() {
+-         return this.nbt;
+-      }
+-
+-      @NotNull
+-      public HoverEvent.ShowItem nbt(@Nullable final BinaryTagHolder nbt) {
+-         return Objects.equals(nbtx, this.nbt) ? this : new HoverEvent.ShowItem(this.item, this.count, nbtx);
+-      }
+-
+-      @Override
+-      public boolean equals(@Nullable final Object other) {
+-         if (this == other) {
+-            return true;
+-         } else if (other != null && this.getClass() == other.getClass()) {
+-            HoverEvent.ShowItem var2 = (HoverEvent.ShowItem)other;
+-            return this.item.equals(var2.item) && this.count == var2.count && Objects.equals(this.nbt, var2.nbt);
+-         } else {
+-            return false;
+-         }
+-      }
+-
+-      @Override
+-      public int hashCode() {
+-         int var1 = this.item.hashCode();
+-         var1 = 31 * var1 + Integer.hashCode(this.count);
+-         return 31 * var1 + Objects.hashCode(this.nbt);
+-      }
+-
+-      @NotNull
+-      @Override
+-      public Stream<? extends ExaminableProperty> examinableProperties() {
+-         return Stream.of(ExaminableProperty.of("item", this.item), ExaminableProperty.of("count", this.count), ExaminableProperty.of("nbt", this.nbt));
+-      }
+-
+-      @Override
+-      public String toString() {
+-         return Internals.toString(this);
+-      }
+-   }
+-}

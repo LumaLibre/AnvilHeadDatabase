@@ -1,0 +1,80 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/Services.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/Services.java
+deleted file mode 100644
+index 83477ff..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/util/Services.java
++++ /dev/null
+@@ -1,74 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.util;
+-
+-import java.util.Iterator;
+-import java.util.Optional;
+-import java.util.ServiceLoader;
+-import me.arcaniax.hdb.libs.kyori.adventure.internal.properties.AdventureProperties;
+-import org.jetbrains.annotations.NotNull;
+-
+-public final class Services {
+-   private static final boolean SERVICE_LOAD_FAILURES_ARE_FATAL = Boolean.TRUE.equals(AdventureProperties.SERVICE_LOAD_FAILURES_ARE_FATAL.value());
+-
+-   private Services() {
+-   }
+-
+-   @NotNull
+-   public static <P> Optional<P> service(@NotNull final Class<P> type) {
+-      ServiceLoader var1 = Services0.loader(type);
+-      Iterator var2 = var1.iterator();
+-
+-      while (var2.hasNext()) {
+-         Object var3;
+-         try {
+-            var3 = var2.next();
+-         } catch (Throwable var5) {
+-            if (!SERVICE_LOAD_FAILURES_ARE_FATAL) {
+-               continue;
+-            }
+-
+-            throw new IllegalStateException("Encountered an exception loading service " + type, var5);
+-         }
+-
+-         if (var2.hasNext()) {
+-            throw new IllegalStateException("Expected to find one service " + type + ", found multiple");
+-         }
+-
+-         return Optional.of((P)var3);
+-      }
+-
+-      return Optional.empty();
+-   }
+-
+-   @NotNull
+-   public static <P> Optional<P> serviceWithFallback(@NotNull final Class<P> type) {
+-      ServiceLoader var1 = Services0.loader(type);
+-      Iterator var2 = var1.iterator();
+-      Object var3 = null;
+-
+-      while (var2.hasNext()) {
+-         Object var4;
+-         try {
+-            var4 = var2.next();
+-         } catch (Throwable var6) {
+-            if (!SERVICE_LOAD_FAILURES_ARE_FATAL) {
+-               continue;
+-            }
+-
+-            throw new IllegalStateException("Encountered an exception loading service " + type, var6);
+-         }
+-
+-         if (!(var4 instanceof Services.Fallback)) {
+-            return Optional.of((P)var4);
+-         }
+-
+-         if (var3 == null) {
+-            var3 = var4;
+-         }
+-      }
+-
+-      return Optional.ofNullable((P)var3);
+-   }
+-
+-   public interface Fallback {
+-   }
+-}

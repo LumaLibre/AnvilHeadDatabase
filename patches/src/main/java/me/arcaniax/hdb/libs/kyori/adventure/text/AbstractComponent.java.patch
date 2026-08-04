@@ -1,0 +1,70 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/AbstractComponent.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/AbstractComponent.java
+deleted file mode 100644
+index c08b308..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/AbstractComponent.java
++++ /dev/null
+@@ -1,64 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-import java.util.List;
+-import java.util.Objects;
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import me.arcaniax.hdb.libs.kyori.examination.string.StringExaminer;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval;
+-import org.jetbrains.annotations.Debug.Renderer;
+-
+-@Deprecated
+-@ScheduledForRemoval(inVersion = "5.0.0")
+-@Renderer(text = "this.debuggerString()", childrenArray = "this.children().toArray()", hasChildren = "!this.children().isEmpty()")
+-public abstract class AbstractComponent implements Component {
+-   protected final List<Component> children;
+-   protected final Style style;
+-
+-   protected AbstractComponent(@NotNull final List<? extends ComponentLike> children, @NotNull final Style style) {
+-      this.children = ComponentLike.asComponents(childrenx, IS_NOT_EMPTY);
+-      this.style = stylex;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public final List<Component> children() {
+-      return this.children;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public final Style style() {
+-      return this.style;
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (this == other) {
+-         return true;
+-      }
+-
+-      if (!(other instanceof AbstractComponent)) {
+-         return false;
+-      }
+-
+-      AbstractComponent var2 = (AbstractComponent)other;
+-      return Objects.equals(this.children, var2.children) && Objects.equals(this.style, var2.style);
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      int var1 = this.children.hashCode();
+-      return 31 * var1 + this.style.hashCode();
+-   }
+-
+-   @Override
+-   public abstract String toString();
+-
+-   private String debuggerString() {
+-      Stream var1 = this.examinableProperties().filter(var0 -> !var0.name().equals("children"));
+-      return StringExaminer.simpleEscaping().examine(this.examinableName(), var1);
+-   }
+-}

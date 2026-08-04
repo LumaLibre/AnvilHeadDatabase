@@ -1,0 +1,85 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/renderer/AbstractComponentRenderer.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/renderer/AbstractComponentRenderer.java
+deleted file mode 100644
+index 1558b0e..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/renderer/AbstractComponentRenderer.java
++++ /dev/null
+@@ -1,79 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.renderer;
+-
+-import me.arcaniax.hdb.libs.kyori.adventure.text.BlockNBTComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.Component;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.EntityNBTComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.KeybindComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.NBTComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.ScoreComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.SelectorComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.StorageNBTComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.TextComponent;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.TranslatableComponent;
+-import org.jetbrains.annotations.NotNull;
+-
+-public abstract class AbstractComponentRenderer<C> implements ComponentRenderer<C> {
+-   @NotNull
+-   @Override
+-   public Component render(@NotNull final Component component, @NotNull final C context) {
+-      if (component instanceof TextComponent) {
+-         return this.renderText((TextComponent)component, (C)context);
+-      }
+-
+-      if (component instanceof TranslatableComponent) {
+-         return this.renderTranslatable((TranslatableComponent)component, (C)context);
+-      }
+-
+-      if (component instanceof KeybindComponent) {
+-         return this.renderKeybind((KeybindComponent)component, (C)context);
+-      }
+-
+-      if (component instanceof ScoreComponent) {
+-         return this.renderScore((ScoreComponent)component, (C)context);
+-      }
+-
+-      if (component instanceof SelectorComponent) {
+-         return this.renderSelector((SelectorComponent)component, (C)context);
+-      }
+-
+-      if (component instanceof NBTComponent) {
+-         if (component instanceof BlockNBTComponent) {
+-            return this.renderBlockNbt((BlockNBTComponent)component, (C)context);
+-         }
+-
+-         if (component instanceof EntityNBTComponent) {
+-            return this.renderEntityNbt((EntityNBTComponent)component, (C)context);
+-         }
+-
+-         if (component instanceof StorageNBTComponent) {
+-            return this.renderStorageNbt((StorageNBTComponent)component, (C)context);
+-         }
+-      }
+-
+-      return component;
+-   }
+-
+-   @NotNull
+-   protected abstract Component renderBlockNbt(@NotNull final BlockNBTComponent component, @NotNull final C context);
+-
+-   @NotNull
+-   protected abstract Component renderEntityNbt(@NotNull final EntityNBTComponent component, @NotNull final C context);
+-
+-   @NotNull
+-   protected abstract Component renderStorageNbt(@NotNull final StorageNBTComponent component, @NotNull final C context);
+-
+-   @NotNull
+-   protected abstract Component renderKeybind(@NotNull final KeybindComponent component, @NotNull final C context);
+-
+-   @NotNull
+-   protected abstract Component renderScore(@NotNull final ScoreComponent component, @NotNull final C context);
+-
+-   @NotNull
+-   protected abstract Component renderSelector(@NotNull final SelectorComponent component, @NotNull final C context);
+-
+-   @NotNull
+-   protected abstract Component renderText(@NotNull final TextComponent component, @NotNull final C context);
+-
+-   @NotNull
+-   protected abstract Component renderTranslatable(@NotNull final TranslatableComponent component, @NotNull final C context);
+-}

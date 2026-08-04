@@ -1,0 +1,97 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/serializer/legacy/CharacterAndFormatImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/serializer/legacy/CharacterAndFormatImpl.java
+deleted file mode 100644
+index dcc4486..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/serializer/legacy/CharacterAndFormatImpl.java
++++ /dev/null
+@@ -1,91 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.serializer.legacy;
+-
+-import java.util.ArrayList;
+-import java.util.Collections;
+-import java.util.List;
+-import java.util.Objects;
+-import me.arcaniax.hdb.libs.kyori.adventure.internal.Internals;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.TextFormat;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class CharacterAndFormatImpl implements CharacterAndFormat {
+-   private final char character;
+-   private final TextFormat format;
+-
+-   CharacterAndFormatImpl(final char character, @NotNull final TextFormat format) {
+-      this.character = characterx;
+-      this.format = Objects.requireNonNull(formatx, "format");
+-   }
+-
+-   @Override
+-   public char character() {
+-      return this.character;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public TextFormat format() {
+-      return this.format;
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (this == other) {
+-         return true;
+-      }
+-
+-      if (!(other instanceof CharacterAndFormatImpl)) {
+-         return false;
+-      }
+-
+-      CharacterAndFormatImpl var2 = (CharacterAndFormatImpl)other;
+-      return this.character == var2.character && this.format.equals(var2.format);
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      char var1 = this.character;
+-      return 31 * var1 + this.format.hashCode();
+-   }
+-
+-   @NotNull
+-   @Override
+-   public String toString() {
+-      return Internals.toString(this);
+-   }
+-
+-   static final class Defaults {
+-      static final List<CharacterAndFormat> DEFAULTS = createDefaults();
+-
+-      private Defaults() {
+-      }
+-
+-      static List<CharacterAndFormat> createDefaults() {
+-         ArrayList var0 = new ArrayList(22);
+-         var0.add(CharacterAndFormat.BLACK);
+-         var0.add(CharacterAndFormat.DARK_BLUE);
+-         var0.add(CharacterAndFormat.DARK_GREEN);
+-         var0.add(CharacterAndFormat.DARK_AQUA);
+-         var0.add(CharacterAndFormat.DARK_RED);
+-         var0.add(CharacterAndFormat.DARK_PURPLE);
+-         var0.add(CharacterAndFormat.GOLD);
+-         var0.add(CharacterAndFormat.GRAY);
+-         var0.add(CharacterAndFormat.DARK_GRAY);
+-         var0.add(CharacterAndFormat.BLUE);
+-         var0.add(CharacterAndFormat.GREEN);
+-         var0.add(CharacterAndFormat.AQUA);
+-         var0.add(CharacterAndFormat.RED);
+-         var0.add(CharacterAndFormat.LIGHT_PURPLE);
+-         var0.add(CharacterAndFormat.YELLOW);
+-         var0.add(CharacterAndFormat.WHITE);
+-         var0.add(CharacterAndFormat.OBFUSCATED);
+-         var0.add(CharacterAndFormat.BOLD);
+-         var0.add(CharacterAndFormat.STRIKETHROUGH);
+-         var0.add(CharacterAndFormat.UNDERLINED);
+-         var0.add(CharacterAndFormat.ITALIC);
+-         var0.add(CharacterAndFormat.RESET);
+-         return Collections.unmodifiableList(var0);
+-      }
+-   }
+-}

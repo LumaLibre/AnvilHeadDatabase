@@ -1,0 +1,25 @@
+diff --git a/src/main/java/me/arcaniax/hdb/metrics/charts/SimplePie.java b/src/main/java/me/arcaniax/hdb/metrics/charts/SimplePie.java
+deleted file mode 100644
+index 7e88474..0000000
+--- a/src/main/java/me/arcaniax/hdb/metrics/charts/SimplePie.java
++++ /dev/null
+@@ -1,19 +0,0 @@
+-package me.arcaniax.hdb.metrics.charts;
+-
+-import java.util.concurrent.Callable;
+-import me.arcaniax.hdb.metrics.json.JsonObjectBuilder;
+-
+-public class SimplePie extends CustomChart {
+-   private final Callable<String> callable;
+-
+-   public SimplePie(String var1, Callable<String> var2) {
+-      super(var1);
+-      this.callable = var2;
+-   }
+-
+-   @Override
+-   protected JsonObjectBuilder.JsonObject getChartData() {
+-      String var1 = this.callable.call();
+-      return var1 != null && !var1.isEmpty() ? new JsonObjectBuilder().appendField("value", var1).build() : null;
+-   }
+-}

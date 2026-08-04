@@ -1,0 +1,187 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/ScoreComponentImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/ScoreComponentImpl.java
+deleted file mode 100644
+index 3d49463..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/ScoreComponentImpl.java
++++ /dev/null
+@@ -1,181 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-import java.util.List;
+-import java.util.Objects;
+-import me.arcaniax.hdb.libs.kyori.adventure.internal.Internals;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class ScoreComponentImpl extends AbstractComponent implements ScoreComponent {
+-   private final String name;
+-   private final String objective;
+-   @Deprecated
+-   @Nullable
+-   private final String value;
+-
+-   static ScoreComponent create(
+-      @NotNull final List<? extends ComponentLike> children,
+-      @NotNull final Style style,
+-      @NotNull final String name,
+-      @NotNull final String objective,
+-      @Nullable final String value
+-   ) {
+-      return new ScoreComponentImpl(
+-         ComponentLike.asComponents(children, IS_NOT_EMPTY),
+-         Objects.requireNonNull(style, "style"),
+-         Objects.requireNonNull(namex, "name"),
+-         Objects.requireNonNull(objectivex, "objective"),
+-         valuex
+-      );
+-   }
+-
+-   ScoreComponentImpl(
+-      @NotNull final List<Component> children,
+-      @NotNull final Style style,
+-      @NotNull final String name,
+-      @NotNull final String objective,
+-      @Nullable final String value
+-   ) {
+-      super(children, style);
+-      this.name = namex;
+-      this.objective = objectivex;
+-      this.value = valuex;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public String name() {
+-      return this.name;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public ScoreComponent name(@NotNull final String name) {
+-      return Objects.equals(this.name, namex) ? this : create(this.children, this.style, namex, this.objective, this.value);
+-   }
+-
+-   @NotNull
+-   @Override
+-   public String objective() {
+-      return this.objective;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public ScoreComponent objective(@NotNull final String objective) {
+-      return Objects.equals(this.objective, objectivex) ? this : create(this.children, this.style, this.name, objectivex, this.value);
+-   }
+-
+-   @Deprecated
+-   @Nullable
+-   @Override
+-   public String value() {
+-      return this.value;
+-   }
+-
+-   @Deprecated
+-   @NotNull
+-   @Override
+-   public ScoreComponent value(@Nullable final String value) {
+-      return Objects.equals(this.value, valuex) ? this : create(this.children, this.style, this.name, this.objective, valuex);
+-   }
+-
+-   @NotNull
+-   public ScoreComponent children(@NotNull final List<? extends ComponentLike> children) {
+-      return create(children, this.style, this.name, this.objective, this.value);
+-   }
+-
+-   @NotNull
+-   public ScoreComponent style(@NotNull final Style style) {
+-      return create(this.children, style, this.name, this.objective, this.value);
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (this == other) {
+-         return true;
+-      }
+-
+-      if (!(other instanceof ScoreComponent)) {
+-         return false;
+-      }
+-
+-      if (!super.equals(other)) {
+-         return false;
+-      }
+-
+-      ScoreComponent var2 = (ScoreComponent)other;
+-      return Objects.equals(this.name, var2.name()) && Objects.equals(this.objective, var2.objective()) && Objects.equals(this.value, var2.value());
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      int var1 = super.hashCode();
+-      var1 = 31 * var1 + this.name.hashCode();
+-      var1 = 31 * var1 + this.objective.hashCode();
+-      return 31 * var1 + Objects.hashCode(this.value);
+-   }
+-
+-   @Override
+-   public String toString() {
+-      return Internals.toString(this);
+-   }
+-
+-   @NotNull
+-   public ScoreComponent.Builder toBuilder() {
+-      return new ScoreComponentImpl.BuilderImpl(this);
+-   }
+-
+-   static final class BuilderImpl extends AbstractComponentBuilder<ScoreComponent, ScoreComponent.Builder> implements ScoreComponent.Builder {
+-      @Nullable
+-      private String name;
+-      @Nullable
+-      private String objective;
+-      @Nullable
+-      private String value;
+-
+-      BuilderImpl() {
+-      }
+-
+-      BuilderImpl(@NotNull final ScoreComponent component) {
+-         super(component);
+-         this.name = component.name();
+-         this.objective = component.objective();
+-         this.value = component.value();
+-      }
+-
+-      @NotNull
+-      @Override
+-      public ScoreComponent.Builder name(@NotNull final String name) {
+-         this.name = Objects.requireNonNull(namex, "name");
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public ScoreComponent.Builder objective(@NotNull final String objective) {
+-         this.objective = Objects.requireNonNull(objectivex, "objective");
+-         return this;
+-      }
+-
+-      @Deprecated
+-      @NotNull
+-      @Override
+-      public ScoreComponent.Builder value(@Nullable final String value) {
+-         this.value = valuex;
+-         return this;
+-      }
+-
+-      @NotNull
+-      public ScoreComponent build() {
+-         if (this.name == null) {
+-            throw new IllegalStateException("name must be set");
+-         } else if (this.objective == null) {
+-            throw new IllegalStateException("objective must be set");
+-         } else {
+-            return ScoreComponentImpl.create(this.children, this.buildStyle(), this.name, this.objective, this.value);
+-         }
+-      }
+-   }
+-}

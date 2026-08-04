@@ -1,0 +1,14 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/ComponentInternals.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/ComponentInternals.java
+deleted file mode 100644
+index b1970d2..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/ComponentInternals.java
++++ /dev/null
+@@ -1,8 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-final class ComponentInternals {
+-   static final String CHILDREN_PROPERTY = "children";
+-
+-   private ComponentInternals() {
+-   }
+-}

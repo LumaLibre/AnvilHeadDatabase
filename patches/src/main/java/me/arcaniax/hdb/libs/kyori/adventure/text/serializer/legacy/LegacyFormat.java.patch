@@ -1,0 +1,85 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/serializer/legacy/LegacyFormat.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/serializer/legacy/LegacyFormat.java
+deleted file mode 100644
+index 578a77c..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/serializer/legacy/LegacyFormat.java
++++ /dev/null
+@@ -1,79 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text.serializer.legacy;
+-
+-import java.util.Objects;
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.NamedTextColor;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.TextColor;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.TextDecoration;
+-import me.arcaniax.hdb.libs.kyori.examination.Examinable;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-public final class LegacyFormat implements Examinable {
+-   static final LegacyFormat RESET = new LegacyFormat(true);
+-   @Nullable
+-   private final NamedTextColor color;
+-   @Nullable
+-   private final TextDecoration decoration;
+-   private final boolean reset;
+-
+-   LegacyFormat(@Nullable final NamedTextColor color) {
+-      this.color = colorx;
+-      this.decoration = null;
+-      this.reset = false;
+-   }
+-
+-   LegacyFormat(@Nullable final TextDecoration decoration) {
+-      this.color = null;
+-      this.decoration = decorationx;
+-      this.reset = false;
+-   }
+-
+-   private LegacyFormat(final boolean reset) {
+-      this.color = null;
+-      this.decoration = null;
+-      this.reset = resetx;
+-   }
+-
+-   @Nullable
+-   public TextColor color() {
+-      return this.color;
+-   }
+-
+-   @Nullable
+-   public TextDecoration decoration() {
+-      return this.decoration;
+-   }
+-
+-   public boolean reset() {
+-      return this.reset;
+-   }
+-
+-   @Override
+-   public boolean equals(@Nullable final Object other) {
+-      if (this == other) {
+-         return true;
+-      } else if (other != null && this.getClass() == other.getClass()) {
+-         LegacyFormat var2 = (LegacyFormat)other;
+-         return this.color == var2.color && this.decoration == var2.decoration && this.reset == var2.reset;
+-      } else {
+-         return false;
+-      }
+-   }
+-
+-   @Override
+-   public int hashCode() {
+-      int var1 = Objects.hashCode(this.color);
+-      var1 = 31 * var1 + Objects.hashCode(this.decoration);
+-      return 31 * var1 + Boolean.hashCode(this.reset);
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.of(
+-         ExaminableProperty.of("color", this.color), ExaminableProperty.of("decoration", this.decoration), ExaminableProperty.of("reset", this.reset)
+-      );
+-   }
+-}

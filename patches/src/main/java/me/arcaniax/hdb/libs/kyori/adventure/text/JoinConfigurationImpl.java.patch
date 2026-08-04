@@ -1,0 +1,333 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/JoinConfigurationImpl.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/JoinConfigurationImpl.java
+deleted file mode 100644
+index 7f9c7ef..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/text/JoinConfigurationImpl.java
++++ /dev/null
+@@ -1,327 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.text;
+-
+-import java.util.Iterator;
+-import java.util.Objects;
+-import java.util.function.Function;
+-import java.util.function.Predicate;
+-import java.util.stream.Stream;
+-import me.arcaniax.hdb.libs.kyori.adventure.internal.Internals;
+-import me.arcaniax.hdb.libs.kyori.adventure.text.format.Style;
+-import me.arcaniax.hdb.libs.kyori.examination.ExaminableProperty;
+-import org.jetbrains.annotations.Contract;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-final class JoinConfigurationImpl implements JoinConfiguration {
+-   static final Function<ComponentLike, Component> DEFAULT_CONVERTOR = ComponentLike::asComponent;
+-   static final Predicate<ComponentLike> DEFAULT_PREDICATE = var0 -> true;
+-   static final JoinConfigurationImpl NULL = new JoinConfigurationImpl();
+-   static final JoinConfiguration STANDARD_NEW_LINES = JoinConfiguration.separator(Component.newline());
+-   static final JoinConfiguration STANDARD_COMMA_SEPARATED = JoinConfiguration.separator(Component.text(","));
+-   static final JoinConfiguration STANDARD_COMMA_SPACE_SEPARATED = JoinConfiguration.separator(Component.text(", "));
+-   static final JoinConfiguration STANDARD_ARRAY_LIKE = JoinConfiguration.builder()
+-      .separator(Component.text(", "))
+-      .prefix(Component.text("["))
+-      .suffix(Component.text("]"))
+-      .build();
+-   private final Component prefix;
+-   private final Component suffix;
+-   private final Component separator;
+-   private final Component lastSeparator;
+-   private final Component lastSeparatorIfSerial;
+-   private final Function<ComponentLike, Component> convertor;
+-   private final Predicate<ComponentLike> predicate;
+-   private final Style rootStyle;
+-
+-   private JoinConfigurationImpl() {
+-      this.prefix = null;
+-      this.suffix = null;
+-      this.separator = null;
+-      this.lastSeparator = null;
+-      this.lastSeparatorIfSerial = null;
+-      this.convertor = DEFAULT_CONVERTOR;
+-      this.predicate = DEFAULT_PREDICATE;
+-      this.rootStyle = Style.empty();
+-   }
+-
+-   private JoinConfigurationImpl(@NotNull final JoinConfigurationImpl.BuilderImpl builder) {
+-      this.prefix = ComponentLike.unbox(builder.prefix);
+-      this.suffix = ComponentLike.unbox(builder.suffix);
+-      this.separator = ComponentLike.unbox(builder.separator);
+-      this.lastSeparator = ComponentLike.unbox(builder.lastSeparator);
+-      this.lastSeparatorIfSerial = ComponentLike.unbox(builder.lastSeparatorIfSerial);
+-      this.convertor = builder.convertor;
+-      this.predicate = builder.predicate;
+-      this.rootStyle = builder.rootStyle;
+-   }
+-
+-   @Nullable
+-   @Override
+-   public Component prefix() {
+-      return this.prefix;
+-   }
+-
+-   @Nullable
+-   @Override
+-   public Component suffix() {
+-      return this.suffix;
+-   }
+-
+-   @Nullable
+-   @Override
+-   public Component separator() {
+-      return this.separator;
+-   }
+-
+-   @Nullable
+-   @Override
+-   public Component lastSeparator() {
+-      return this.lastSeparator;
+-   }
+-
+-   @Nullable
+-   @Override
+-   public Component lastSeparatorIfSerial() {
+-      return this.lastSeparatorIfSerial;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Function<ComponentLike, Component> convertor() {
+-      return this.convertor;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Predicate<ComponentLike> predicate() {
+-      return this.predicate;
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Style parentStyle() {
+-      return this.rootStyle;
+-   }
+-
+-   public JoinConfiguration.@NotNull Builder toBuilder() {
+-      return new JoinConfigurationImpl.BuilderImpl(this);
+-   }
+-
+-   @NotNull
+-   @Override
+-   public Stream<? extends ExaminableProperty> examinableProperties() {
+-      return Stream.of(
+-         ExaminableProperty.of("prefix", this.prefix),
+-         ExaminableProperty.of("suffix", this.suffix),
+-         ExaminableProperty.of("separator", this.separator),
+-         ExaminableProperty.of("lastSeparator", this.lastSeparator),
+-         ExaminableProperty.of("lastSeparatorIfSerial", this.lastSeparatorIfSerial),
+-         ExaminableProperty.of("convertor", this.convertor),
+-         ExaminableProperty.of("predicate", this.predicate),
+-         ExaminableProperty.of("rootStyle", this.rootStyle)
+-      );
+-   }
+-
+-   @Override
+-   public String toString() {
+-      return Internals.toString(this);
+-   }
+-
+-   @Contract(pure = true)
+-   @NotNull
+-   static Component join(@NotNull final JoinConfiguration config, @NotNull final Iterable<? extends ComponentLike> components) {
+-      Objects.requireNonNull(config, "config");
+-      Objects.requireNonNull(components, "components");
+-      Iterator var2 = components.iterator();
+-      if (!var2.hasNext()) {
+-         return singleElementJoin(config, null);
+-      }
+-
+-      ComponentLike var3 = Objects.requireNonNull((ComponentLike)var2.next(), "Null elements in \"components\" are not allowed");
+-      int var4 = 0;
+-      if (!var2.hasNext()) {
+-         return singleElementJoin(config, var3);
+-      }
+-
+-      Component var5 = config.prefix();
+-      Component var6 = config.suffix();
+-      Function var7 = config.convertor();
+-      Predicate var8 = config.predicate();
+-      Style var9 = config.parentStyle();
+-      boolean var10 = var9 != Style.empty();
+-      Component var11 = config.separator();
+-      boolean var12 = var11 != null;
+-      TextComponent.Builder var13 = var10 ? Component.text().style(var9) : Component.text();
+-      if (var5 != null) {
+-         var13.append(var5);
+-      }
+-
+-      while (var3 != null) {
+-         if (!var8.test(var3)) {
+-            if (!var2.hasNext()) {
+-               break;
+-            }
+-
+-            var3 = (ComponentLike)var2.next();
+-         } else {
+-            var13.append(Objects.requireNonNull((Component)var7.apply(var3), "Null output from \"convertor\" is not allowed"));
+-            var4++;
+-            if (!var2.hasNext()) {
+-               var3 = null;
+-            } else {
+-               var3 = Objects.requireNonNull((ComponentLike)var2.next(), "Null elements in \"components\" are not allowed");
+-               if (var2.hasNext()) {
+-                  if (var12) {
+-                     var13.append(var11);
+-                  }
+-               } else {
+-                  Component var14 = null;
+-                  if (var4 > 1) {
+-                     var14 = config.lastSeparatorIfSerial();
+-                  }
+-
+-                  if (var14 == null) {
+-                     var14 = config.lastSeparator();
+-                  }
+-
+-                  if (var14 == null) {
+-                     var14 = config.separator();
+-                  }
+-
+-                  if (var14 != null) {
+-                     var13.append(var14);
+-                  }
+-               }
+-            }
+-         }
+-      }
+-
+-      if (var6 != null) {
+-         var13.append(var6);
+-      }
+-
+-      return var13.build();
+-   }
+-
+-   @NotNull
+-   static Component singleElementJoin(@NotNull final JoinConfiguration config, @Nullable final ComponentLike component) {
+-      Component var2 = config.prefix();
+-      Component var3 = config.suffix();
+-      Function var4 = config.convertor();
+-      Predicate var5 = config.predicate();
+-      Style var6 = config.parentStyle();
+-      boolean var7 = var6 != Style.empty();
+-      if (var2 == null && var3 == null) {
+-         Component var9;
+-         if (component != null && var5.test(component)) {
+-            var9 = (Component)var4.apply(component);
+-         } else {
+-            var9 = Component.empty();
+-         }
+-
+-         return var7 ? Component.text().style(var6).append(var9).build() : var9;
+-      } else {
+-         TextComponent.Builder var8 = Component.text();
+-         if (var2 != null) {
+-            var8.append(var2);
+-         }
+-
+-         if (component != null && var5.test(component)) {
+-            var8.append((Component)var4.apply(component));
+-         }
+-
+-         if (var3 != null) {
+-            var8.append(var3);
+-         }
+-
+-         return var7 ? Component.text().style(var6).append(var8).build() : var8.build();
+-      }
+-   }
+-
+-   static final class BuilderImpl implements JoinConfiguration.Builder {
+-      private ComponentLike prefix;
+-      private ComponentLike suffix;
+-      private ComponentLike separator;
+-      private ComponentLike lastSeparator;
+-      private ComponentLike lastSeparatorIfSerial;
+-      private Function<ComponentLike, Component> convertor;
+-      private Predicate<ComponentLike> predicate;
+-      private Style rootStyle;
+-
+-      BuilderImpl() {
+-         this(JoinConfigurationImpl.NULL);
+-      }
+-
+-      private BuilderImpl(@NotNull final JoinConfigurationImpl joinConfig) {
+-         this.separator = joinConfig.separator;
+-         this.lastSeparator = joinConfig.lastSeparator;
+-         this.prefix = joinConfig.prefix;
+-         this.suffix = joinConfig.suffix;
+-         this.convertor = joinConfig.convertor;
+-         this.lastSeparatorIfSerial = joinConfig.lastSeparatorIfSerial;
+-         this.predicate = joinConfig.predicate;
+-         this.rootStyle = joinConfig.rootStyle;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public JoinConfiguration.Builder prefix(@Nullable final ComponentLike prefix) {
+-         this.prefix = prefixx;
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public JoinConfiguration.Builder suffix(@Nullable final ComponentLike suffix) {
+-         this.suffix = suffixx;
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public JoinConfiguration.Builder separator(@Nullable final ComponentLike separator) {
+-         this.separator = separatorx;
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public JoinConfiguration.Builder lastSeparator(@Nullable final ComponentLike lastSeparator) {
+-         this.lastSeparator = lastSeparatorx;
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public JoinConfiguration.Builder lastSeparatorIfSerial(@Nullable final ComponentLike lastSeparatorIfSerial) {
+-         this.lastSeparatorIfSerial = lastSeparatorIfSerialx;
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public JoinConfiguration.Builder convertor(@NotNull final Function<ComponentLike, Component> convertor) {
+-         this.convertor = Objects.requireNonNull(convertorx, "convertor");
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public JoinConfiguration.Builder predicate(@NotNull final Predicate<ComponentLike> predicate) {
+-         this.predicate = Objects.requireNonNull(predicatex, "predicate");
+-         return this;
+-      }
+-
+-      @NotNull
+-      @Override
+-      public JoinConfiguration.Builder parentStyle(@NotNull final Style parentStyle) {
+-         this.rootStyle = Objects.requireNonNull(parentStyle, "rootStyle");
+-         return this;
+-      }
+-
+-      @NotNull
+-      public JoinConfiguration build() {
+-         return new JoinConfigurationImpl(this);
+-      }
+-   }
+-}

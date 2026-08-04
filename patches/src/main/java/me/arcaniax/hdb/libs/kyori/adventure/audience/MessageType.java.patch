@@ -1,0 +1,20 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/audience/MessageType.java b/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/audience/MessageType.java
+deleted file mode 100644
+index 80ff8a6..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/adventure/audience/MessageType.java
++++ /dev/null
+@@ -1,14 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.adventure.audience;
+-
+-import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval;
+-
+-@Deprecated
+-@ScheduledForRemoval(inVersion = "5.0.0")
+-public enum MessageType {
+-   @Deprecated
+-   @ScheduledForRemoval(inVersion = "5.0.0")
+-   CHAT,
+-   @Deprecated
+-   @ScheduledForRemoval(inVersion = "5.0.0")
+-   SYSTEM;
+-}

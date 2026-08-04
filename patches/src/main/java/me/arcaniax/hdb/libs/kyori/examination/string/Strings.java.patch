@@ -1,0 +1,53 @@
+diff --git a/src/main/java/me/arcaniax/hdb/libs/kyori/examination/string/Strings.java b/src/main/java/me/arcaniax/hdb/libs/kyori/examination/string/Strings.java
+deleted file mode 100644
+index 40c9e7c..0000000
+--- a/src/main/java/me/arcaniax/hdb/libs/kyori/examination/string/Strings.java
++++ /dev/null
+@@ -1,47 +0,0 @@
+-package me.arcaniax.hdb.libs.kyori.examination.string;
+-
+-import java.util.stream.Stream;
+-import org.jetbrains.annotations.NotNull;
+-
+-final class Strings {
+-   private Strings() {
+-   }
+-
+-   @NotNull
+-   static String withSuffix(final String string, final char suffix) {
+-      return string + suffix;
+-   }
+-
+-   @NotNull
+-   static String wrapIn(final String string, final char wrap) {
+-      return wrap + string + wrap;
+-   }
+-
+-   static int maxLength(final Stream<String> strings) {
+-      return strings.mapToInt(String::length).max().orElse(0);
+-   }
+-
+-   @NotNull
+-   static String repeat(@NotNull final String string, final int count) {
+-      if (count == 0) {
+-         return "";
+-      }
+-
+-      if (count == 1) {
+-         return string;
+-      }
+-
+-      StringBuilder var2 = new StringBuilder(string.length() * count);
+-
+-      for (int var3 = 0; var3 < count; var3++) {
+-         var2.append(string);
+-      }
+-
+-      return var2.toString();
+-   }
+-
+-   @NotNull
+-   static String padEnd(@NotNull final String string, final int minLength, final char padding) {
+-      return string.length() >= minLength ? string : String.format("%-" + minLength + "s", padding);
+-   }
+-}
