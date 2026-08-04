@@ -44,6 +44,7 @@ anvil {
 }
 
 tasks.shadowJar {
+    archiveBaseName.set("HeadDatabase")
     archiveClassifier.set("")
     val group = "me.arcaniax.hdb"
     relocate("net.kyori", "$group.libs.kyori")
